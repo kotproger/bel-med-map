@@ -1,4 +1,56 @@
 
-<div class="row" >
-    <div id="med_map" #med_map></div> 
+
+<div class="row">
+    <div class="tooltip" 
+    #tooltip 
+    [ngClass]="{'no-display': !hoveredItems}"
+>
+    <mat-card>
+        <mat-card-header>
+            <ng-container *ngFor="let item of hoveredItems | keyvalue">
+                <mat-card-title>{{item.value.organization.name}}</mat-card-title>
+                <mat-card-subtitle *ngFor="let build of item.value.buildings"> •{{build.name}}</mat-card-subtitle>
+            </ng-container>
+        </mat-card-header>
+    </mat-card>
+</div>
+    <div class="med_map" #med_map>
+        <a href="http://belzdrav.ru/" 
+            target="_blank" 
+            class="gerb"
+            matTooltip="Департамент здравоохранения и социальной защиты населения Белгородской области"
+            matTooltipPosition="right"
+        >
+            <img [src]="imgUrl + '/assets/img/logo.png'">
+        </a>
+ 
+        <div class="zoom" #zoom>
+            <button mat-fab  
+                class="p-button" 
+                aria-label="Zoom in" 
+                [disabled]="zoomInDisabled()"
+                (click)="zoomChange(1)"
+                matTooltip="Приблизить карту"
+            >
+                <span class="b-text"> + </span>
+            </button>
+            <button mat-mini-fab 
+                class="m-button" 
+                aria-label="Zoom out" 
+                [disabled]="zoomOutDisabled()"
+                (click)="zoomChange(-1)"
+                matTooltip="Отдалить карту"
+            >
+                <span class="b-text"> - </span>
+            </button>
+            <button mat-mini-fab 
+                class="h-button" 
+                aria-label="Zoom init" 
+                (click)="mapInit()"
+                matTooltip="Начальное состояние карты"
+            >
+                <mat-icon>home</mat-icon>
+            </button>
+        </div>
+    </div>  
 </div>

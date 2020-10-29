@@ -1,4 +1,62 @@
-#med_map, .row{
+.med_map, .row{
     height: 100%;
     width: 100%;
 }
+.med_map{
+    position: relative;
+}
+
+mat-card{
+    padding: 3px !important;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 200px;
+    outline: none;
+}
+
+mat-card-subtitle{
+    margin: 0 !important; 
+    padding-left: 5px;
+}
+mat-card-title{
+    margin: 0 !important; 
+    font-size: small !important; 
+}
+mat-card-header{
+    flex-direction: column !important;
+}
+.m-button{
+    position: absolute;
+    z-index: 1;
+    top: 167px;
+    left: 22px;
+}
+.h-button{
+    position: absolute;
+    z-index: 1;
+    top: 214px;
+    left: 22px;
+}
+.p-button{
+    position: absolute;
+    z-index: 1;
+    top: 105px;
+    left: 14px;
+}
+.b-text{
+    font-size: x-large;
+}
+.gerb{
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    left: 10px;
+}
+.gerb>img{
+    width: 64px;
+}
+.tooltip{
+    position: fixed;
+    z-index: 2;
+}
+
