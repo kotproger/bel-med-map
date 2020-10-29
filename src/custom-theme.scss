@@ -13,7 +13,7 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $map-app-primary: mat-palette($mat-indigo);
-$map-app-accent: mat-palette($mat-pink, A200, A100, A400);
+$map-app-accent: mat-palette($mat-amber, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
 $map-app-warn: mat-palette($mat-red);
@@ -27,6 +27,21 @@ $map-app-theme: mat-light-theme((
     warn: $map-app-warn,
   )
 ));
+
+// Define an alternate dark theme.
+$dark-primary: mat-palette($mat-blue-grey);
+$dark-accent:  mat-palette($mat-amber, A200, A100, A400);
+$dark-warn:    mat-palette($mat-deep-orange);
+$dark-theme:   mat-dark-theme((
+  color: (
+    primary: $dark-primary,
+    accent: $dark-accent,
+    warn: $dark-warn,
+  )
+));
+.unicorn-dark-theme {
+  @include angular-material-color($dark-theme);
+}
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
