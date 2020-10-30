@@ -136,7 +136,6 @@ export class MapComponent implements AfterViewInit {
                                         name: current.buildingName,
                                         id: current.buildingId
                                     }]
-
                                 };
                             }
                             return rezult;
@@ -160,14 +159,17 @@ export class MapComponent implements AfterViewInit {
         });
 
     }
+
     // проверка доступности приближения карты
     zoomInDisabled(): boolean {
         return this.mapZoomConfig.zoom >=  this.mapZoomConfig.maxZoom;
     }
+
     // проверка доступности отдаления карты
     zoomOutDisabled(): boolean {
         return this.mapZoomConfig.zoom <=  this.mapZoomConfig.minZoom;
     }
+
     // приближение/отдаление карты
     zoomChange(value: number): void {
         let tZoom = this.mapZoomConfig.zoom + value;
@@ -181,6 +183,7 @@ export class MapComponent implements AfterViewInit {
         this.map.getView().setZoom(tZoom);
         this.changeDetectorRef.detectChanges();
     }
+
     // установка начальной позиции карты
     mapInit(): void {
         this.map.getView().animate({

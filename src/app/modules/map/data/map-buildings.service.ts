@@ -91,6 +91,7 @@ export class MapBuildingsService {
                             return style;
                         }
 
+                        // создание иконки маркера
                         const styles = [new Style({
                             image: new Icon({
                                 src: ICONS[property],
@@ -99,6 +100,7 @@ export class MapBuildingsService {
                             })
                         })];
 
+                        // если в кластере более 1 элемента - добавить стиль подписи
                         if (size > 1) {
                             styles.push(
                                 new Style({
