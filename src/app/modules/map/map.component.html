@@ -7,9 +7,9 @@
 >
     <mat-card>
         <mat-card-header>
-            <ng-container *ngFor="let item of hoveredItems | keyvalue">
-                <mat-card-title>{{item.value.organization.name}}</mat-card-title>
-                <mat-card-subtitle *ngFor="let build of item.value.buildings"> •{{build.name}}</mat-card-subtitle>
+            <ng-container *ngFor="let item of hoveredItems ">
+                <mat-card-title>{{item.organization.name}}</mat-card-title>
+                <mat-card-subtitle *ngFor="let build of item.buildings"> • {{build.name}}</mat-card-subtitle>
             </ng-container>
         </mat-card-header>
     </mat-card>

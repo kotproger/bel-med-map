@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectionStrateg
 import { environment } from 'src/environments/environment';
 
 import { MapBuildingsService } from './data/map-buildings.service';
+import { BuildingsInOrganization } from '../../core/services/data/buildings.models';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -17,6 +18,12 @@ import proj4 from 'proj4';
 
 const mapZoom = 8;
 const initCoords = [36.5763, 50.5919];
+
+interface GetMapFeaturesAtPixel {
+    features: BuildingsInOrganization[];
+    lastFeature: any;
+}
+
 
 @Component({
     selector: 'app-map-component',
@@ -43,7 +50,7 @@ export class MapComponent implements AfterViewInit {
         minZoom: 4
     };
 
-    hoveredItems: any|any[] = null;
+    hoveredItems: BuildingsInOrganization[] = null;
     hoveredItemsPosition: any = null;
 
     ngAfterViewInit(): void {
@@ -99,8 +106,14 @@ export class MapComponent implements AfterViewInit {
             }
         });
 
+        this.map.on('click', evt => {
+            const pixel = this.map.getEventPixel(evt.originalEvent);
+            const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(pixel);
+            console.log(rezult);
+        });
+
         // наведение курсора на элемнет.изменение указателя мышки и показ всплывающей подсказки
-        let lastFuture = null;
+        let lastFeature = null;
         this.map.on('pointermove', evt => {
 
             // изменение курсора при наведении на маркер
@@ -110,52 +123,22 @@ export class MapComponent implements AfterViewInit {
                 ? 'pointer'
                 : '';
 
-            // получение списка зданий, привязанных к маркеру
-            const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
-            if (feature && (!lastFuture || lastFuture.ol_uid !== feature.ol_uid)) {
-                lastFuture = feature;
-                const resultFutures = feature.get('features');
-                if (resultFutures && resultFutures.length){
-
-                    // группировка зданий по организациям
-                    this.hoveredItems = resultFutures
-                        .map(f => f.getProperties())
-                        .reduce((rezult, current) => {
-                            if (rezult[current.organizationId]){
-                                rezult[current.organizationId].buildings.push({
-                                    name: current.buildingName,
-                                    id: current.buildingId
-                                });
-                            } else {
-                                rezult[current.organizationId] = {
-                                    organization: {
-                                        name: current.organizationName,
-                                        id: current.organizationId
-                                    },
-                                    buildings: [{
-                                        name: current.buildingName,
-                                        id: current.buildingId
-                                    }]
-                                };
-                            }
-                            return rezult;
-                        }, {});
-
-                    // показ всплывающей подсказки
-                    const styleTip = this.tooltipDiv.nativeElement.style;
-                    styleTip.top = pixel[1] + 'px';
-                    styleTip.left = pixel[0] + 'px';
-                    this.changeDetectorRef.detectChanges();
-                    setTimeout(() => {
-                        this.tooltipDiv.nativeElement.children[0].tabIndex = 1;
-                        this.tooltipDiv.nativeElement.children[0].focus();
-                    });
-                }
-            } else if (!feature){
-                lastFuture = null;
-                this.hoveredItems = null;
+            const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(pixel, lastFeature);
+            this.hoveredItems = rezult.features;
+            if (rezult.features){
+                // показ всплывающей подсказки
+                const styleTip = this.tooltipDiv.nativeElement.style;
+                styleTip.top = pixel[1] + 'px';
+                styleTip.left = pixel[0] + 'px';
+                this.changeDetectorRef.detectChanges();
+                setTimeout(() => {
+                    this.tooltipDiv.nativeElement.children[0].tabIndex = 1;
+                    this.tooltipDiv.nativeElement.children[0].focus();
+                });
+            } else if (lastFeature && !rezult.lastFeature){
                 this.changeDetectorRef.detectChanges();
             }
+            lastFeature  = rezult.lastFeature;
         });
 
     }
@@ -190,5 +173,50 @@ export class MapComponent implements AfterViewInit {
             center: olProj.fromLonLat(initCoords),
             zoom: mapZoom
         });
+    }
+
+    // получить объекты под указателем курсора по координатам
+    getMapFeaturesAtPixel(pixel: number[], lastFeature?: any): GetMapFeaturesAtPixel {
+        // получение списка зданий, привязанных к маркеру
+        const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
+        if (feature && (!lastFeature || lastFeature.ol_uid !== feature.ol_uid)) {
+            lastFeature = feature;
+            const resultFeatures = feature.get('features');
+            if (resultFeatures && resultFeatures.length){
+
+                // группировка зданий по организациям
+                return {features: resultFeatures
+                    .map(f => f.getProperties())
+                    .reduce((rezult, current) => {
+                        if (rezult.flag[current.organizationId]){
+                            rezult.flag[current.organizationId].buildings.push({
+                                name: current.buildingName,
+                                id: current.buildingId
+                            });
+                        } else {
+                            rezult.flag[current.organizationId] = {
+                                organization: {
+                                    name: current.organizationName,
+                                    id: current.organizationId
+                                },
+                                buildings: [{
+                                    name: current.buildingName,
+                                    id: current.buildingId
+                                }]
+                            };
+                            rezult.rez.push(rezult.flag[current.organizationId]);
+                        }
+                        return rezult;
+                    }, {
+                        rez: [],
+                        flag: {}
+                    }).rez,
+                    lastFeature: feature
+                };
+            }
+        } else if (!feature){
+            return {features: null, lastFeature: null};
+        }
+        return {features: null, lastFeature: feature};
     }
 }

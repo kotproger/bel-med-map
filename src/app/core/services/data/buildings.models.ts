@@ -2,6 +2,11 @@ export interface BuildingIcon  {
     [key: string]: string;
 }
 
+export interface SimpleObject  {
+    name: string;
+    id: string;
+}
+
 export interface BuildingPoint  {
     buildingId: number;
     buildingName: string;
@@ -10,6 +15,15 @@ export interface BuildingPoint  {
     usageType?: string;
     lon: number;
     lat: number;
+}
+
+export interface BuildingsInOrganization  {
+    organization: SimpleObject;
+    buildings: SimpleObject[];
+}
+
+export interface BuildingsGroupByOrganizations  {
+    [key: string]: BuildingsInOrganization;
 }
 
 
