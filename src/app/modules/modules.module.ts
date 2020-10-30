@@ -7,7 +7,6 @@ import { MapModule } from './map/map.module';
   declarations: [],
   imports: [
     CommonModule
-    
   ],
   exports: [MapModule]
 })
