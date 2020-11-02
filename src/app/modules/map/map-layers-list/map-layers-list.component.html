@@ -1,1 +1,29 @@
-<p>map-layers-list works!</p>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Типы использования</mat-card-title>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>   
+        <div class="record-container active p-16" 
+            *ngFor="let item of layersList"
+            (click)="onSelectLayer(item)"
+        >   
+            <img [src]="icons[item.name]" alt="">  
+            <div class="text-container main"> 
+                <div class="no-wrap-text">
+                    {{item.name}}
+                </div>
+            </div>
+
+            <mat-checkbox 
+                class="example-margin" 
+                [(ngModel)]="item.checked"
+                (click)="onLayerCheckChange($event ,item)"
+            ></mat-checkbox>
+                
+        </div>
+    </mat-card-content>
+</mat-card>
+

@@ -1,4 +1,4 @@
-.map-popup {
+:host(app-map-popup) {
     position: absolute;
     z-index: 1;
     top: 10px;
@@ -6,7 +6,7 @@
     width: 350px;
     padding: 0 !important;
 }
-::ng-deep mat-card{
+mat-card{
     padding: 16px 0 0 0 !important;
     height: 500px;
 }
@@ -16,32 +16,7 @@
 .content-container {
     padding-top: 8px;
 }
-.record-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    box-sizing: border-box;
-}
 
-.record-container.active:hover{
-    background: whitesmoke; 
-    cursor: pointer;
-}
-.text-container {
-    display: flex;
-    flex-direction: column;
-    flex: auto;
-    box-sizing: border-box;
-    overflow: hidden;
-    padding: 0;
-    
-}
-.text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-}
 .icon {
     padding: 4px 0;
 }
@@ -60,7 +35,6 @@
     flex-direction: column;
     box-sizing: border-box;
     padding-bottom: 2px;
-    /* padding: 0 16px; */
 }
 .option-container > .record-container {
     align-items: flex-start;  
@@ -80,12 +54,7 @@
 .options-lest {
     overflow: hidden;
 }
-.p-16 {
-    padding: 0 16px;
-}
-.pt-8{
-    padding-top: 8px;
-}
+
 .mat-card-avatar {
     border-radius: 50%;
     object-fit: cover;
@@ -97,11 +66,12 @@
 .mat-card-subtitle{
     margin-bottom: 0 !important;
 }
-::ng-deep.mat-card-header-text {
+::ng-deep .popup-fix>.mat-card-header-text {
     width: 290px;
     margin: 0 8px !important;
 }
-::ng-deep.mat-card-content{
+
+.mat-card-content{
     max-height: 456px;
-    overflow-x: auto;
+    overflow-y: auto;
 }

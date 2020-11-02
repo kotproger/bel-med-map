@@ -1,0 +1,23 @@
+:host(app-map-layers-list){
+    position: absolute;
+    z-index: 1;
+    bottom: 10px;
+    right: 10px;
+    width: 350px;
+    padding: 0 !important;
+}
+img {
+    height: 24px;
+}
+.record-container{
+    padding-bottom: 4px;
+}
+.text-container {
+    padding: 0 8px;
+}
+mat-card-content{
+    padding-top: 8px;
+}
+mat-card {
+    padding: 16px 0 0 0 !important;
+}

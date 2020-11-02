@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { BuildingPoint } from '../../../core/services/data/buildings.models';
+import { BuildingPoint } from './buildings.models';
 
-import { BuildingsService } from '../../../core/services/data/buildings.service';
+import { BuildingsService } from './buildings.service';
 
-import { ICONS } from './mock-icons';
+import { ICONS } from '../../../modules/map/data/mock-icons';
 
 import VectorSource from 'ol/source/Vector';
 import Point from 'ol/geom/Point';
@@ -80,8 +80,7 @@ export class MapBuildingsService {
                 source: vectorSource
             });
 
-            vectorLayers.push(
-                new VectorLayer({
+            const vectorLayer = new VectorLayer({
                     source: clusterSource,
                     style: feature => {
                         const size = feature.get('features').length;
@@ -126,8 +125,9 @@ export class MapBuildingsService {
                         styleCache[styleName] = styles;
                         return styles;
                     }
-                })
-            );
+                });
+            vectorLayer.set('name', property);
+            vectorLayers.push(vectorLayer);
         }
         this.setVectorLayers(vectorLayers);
     }

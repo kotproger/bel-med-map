@@ -1,7 +1,8 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-import { MapBuildingsService } from './data/map-buildings.service';
+import { MapBuildingsService } from '../../core/services/data/map-buildings.service';
 import {
     BuildingsInOrganization,
     BuildingsInOrganizationSet
@@ -28,14 +29,13 @@ interface GetMapFeaturesAtPixel {
     usageType: string|null;
 }
 
-
 @Component({
     selector: 'app-map-component',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnDestroy {
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
@@ -45,7 +45,10 @@ export class MapComponent implements AfterViewInit {
     @ViewChild('med_map') medMapDiv: ElementRef;
     @ViewChild('tooltip') tooltipDiv: ElementRef;
 
-    private map: any;
+    private subscription: Subscription;
+
+    public map: any;
+    public layersGroup: any;
 
     imgUrl = environment.iconUrl;
 
@@ -95,9 +98,9 @@ export class MapComponent implements AfterViewInit {
         this.mapBuildingsService.getMapBuildings();
 
         // вывод векторных стоев на карту
-        this.mapBuildingsService.vectorLayersSubj$.subscribe((buildingsVectorLayers: VectorLayer[]) => {
+        this.subscription = this.mapBuildingsService.vectorLayersSubj$.subscribe((buildingsVectorLayers: VectorLayer[]) => {
             this.map.addLayer(
-                new LayerGroup({
+                this.layersGroup = new LayerGroup({
                     layers: buildingsVectorLayers
                 })
             );
@@ -121,6 +124,9 @@ export class MapComponent implements AfterViewInit {
                 usageType: rezult.usageType
             };
             this.changeDetectorRef.detectChanges();
+
+            // this.map.removeLayer(this.layersGroup.getLayersArray()[0]);
+            // this.layersGroup.getLayers().remove(this.layersGroup.getLayersArray()[0])
         });
 
         // наведение курсора на элемнет.изменение указателя мышки и показ всплывающей подсказки
@@ -239,5 +245,9 @@ export class MapComponent implements AfterViewInit {
             lastFeature: feature,
             usageType: null
         };
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }
