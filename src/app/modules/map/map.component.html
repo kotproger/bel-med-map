@@ -1,6 +1,7 @@
 
 
 <div class="row">
+    <app-map-popup [organizationsSet]="clickedItems"></app-map-popup>
     <div class="tooltip" 
     #tooltip 
     [ngClass]="{'no-display': !hoveredItems}"

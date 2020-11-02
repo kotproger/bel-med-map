@@ -2,7 +2,10 @@ import { Component, ElementRef, ViewChild, AfterViewInit, ChangeDetectionStrateg
 import { environment } from 'src/environments/environment';
 
 import { MapBuildingsService } from './data/map-buildings.service';
-import { BuildingsInOrganization } from '../../core/services/data/buildings.models';
+import {
+    BuildingsInOrganization,
+    BuildingsInOrganizationSet
+} from '../../core/services/data/buildings.models';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -22,6 +25,7 @@ const initCoords = [36.5763, 50.5919];
 interface GetMapFeaturesAtPixel {
     features: BuildingsInOrganization[];
     lastFeature: any;
+    usageType: string|null;
 }
 
 
@@ -40,6 +44,7 @@ export class MapComponent implements AfterViewInit {
 
     @ViewChild('med_map') medMapDiv: ElementRef;
     @ViewChild('tooltip') tooltipDiv: ElementRef;
+
     private map: any;
 
     imgUrl = environment.iconUrl;
@@ -50,6 +55,7 @@ export class MapComponent implements AfterViewInit {
         minZoom: 4
     };
 
+    clickedItems: BuildingsInOrganizationSet = null;
     hoveredItems: BuildingsInOrganization[] = null;
     hoveredItemsPosition: any = null;
 
@@ -109,7 +115,12 @@ export class MapComponent implements AfterViewInit {
         this.map.on('click', evt => {
             const pixel = this.map.getEventPixel(evt.originalEvent);
             const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(pixel);
-            console.log(rezult);
+            // console.log(rezult);
+            this.clickedItems = {
+                items: rezult.features,
+                usageType: rezult.usageType
+            };
+            this.changeDetectorRef.detectChanges();
         });
 
         // наведение курсора на элемнет.изменение указателя мышки и показ всплывающей подсказки
@@ -185,6 +196,7 @@ export class MapComponent implements AfterViewInit {
             if (resultFeatures && resultFeatures.length){
 
                 // группировка зданий по организациям
+
                 return {features: resultFeatures
                     .map(f => f.getProperties())
                     .reduce((rezult, current) => {
@@ -197,7 +209,7 @@ export class MapComponent implements AfterViewInit {
                             rezult.flag[current.organizationId] = {
                                 organization: {
                                     name: current.organizationName,
-                                    id: current.organizationId
+                                    id: current.organizationId,
                                 },
                                 buildings: [{
                                     name: current.buildingName,
@@ -211,12 +223,21 @@ export class MapComponent implements AfterViewInit {
                         rez: [],
                         flag: {}
                     }).rez,
-                    lastFeature: feature
+                    lastFeature: feature,
+                    usageType: resultFeatures[0].getProperties().usageType
                 };
             }
         } else if (!feature){
-            return {features: null, lastFeature: null};
+            return {
+                features: null,
+                lastFeature: null,
+                usageType: null
+            };
         }
-        return {features: null, lastFeature: feature};
+        return {
+            features: null,
+            lastFeature: feature,
+            usageType: null
+        };
     }
 }

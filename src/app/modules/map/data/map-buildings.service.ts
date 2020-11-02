@@ -52,7 +52,8 @@ export class MapBuildingsService {
                 buildingId: current.buildingId,
                 buildingName: current.buildingName,
                 organizationId: current.organizationId,
-                organizationName: current.organizationName
+                organizationName: current.organizationName,
+                usageType: current.usageType
             });
 
             if (rezult[current.usageType] !== undefined){
