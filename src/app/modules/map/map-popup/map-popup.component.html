@@ -1,8 +1,8 @@
-<div class="map-popup mat-card" *ngIf="_organizations">   
-    <mat-tab-group [(selectedIndex)]="viewIndex" disablePagination="true" class="fit-to-content">
+
+    <mat-tab-group [(selectedIndex)]="viewIndex" disablePagination="true" class="fit-to-content mat-card p-0" *ngIf="_organizations">
         <mat-tab > 
             <mat-card>
-                <mat-card-header>
+                <mat-card-header class="popup-fix">
                     <mat-card-title>Список зданий</mat-card-title>
                     <mat-card-subtitle>{{usageType}}</mat-card-subtitle>
                     <div class="mat-card-avatar" *ngIf="usageType">
@@ -20,13 +20,13 @@
                             matTooltipPosition="right"
                         >
                             <div class="text-container main"> 
-                                <div class="text ">
+                                <div class="no-wrap-text">
                                     <u>{{item.organization.name}}</u>
                                 </div>
                             </div>
                         </div>
 
-                        <div >
+                        <div>
                             <div class="record-container active p-16" 
                                 *ngFor="let build of item.buildings"
                                 [matTooltip]="build.name"
@@ -35,7 +35,7 @@
                                 
                             >
                                 <div class="text-container second"> 
-                                    <div class="text ">
+                                    <div class="no-wrap-text">
                                         • {{build.name}}
                                     </div>
                                 </div>
@@ -51,11 +51,11 @@
         <mat-tab>
             <mat-card>
 
-                <mat-card-header>
+                <mat-card-header class="popup-fix">
                     <mat-card-title
                         [matTooltip]="selectedOrganization ? selectedOrganization.organization.name : ''"
                         matTooltipPosition="right"
-                        class="text"
+                        class="no-wrap-text"
                     >
                         {{selectedOrganization ? selectedOrganization.organization.name : ''}}
                     </mat-card-title>
@@ -78,7 +78,7 @@
                         
                         <mat-icon  class="icon" *ngIf="!isOneBuilding">keyboard_arrow_left</mat-icon>  
                         <div class="text-container main"> 
-                            <div class="text ">
+                            <div class="no-wrap-text">
                                 К списку зданий 
                             </div>
                         </div>
@@ -186,7 +186,7 @@
                             </div>
                             <div class="option-value">
                                 <ng-container *ngIf="detailOfBuilding.site">
-                                    <a [href]="detailOfBuilding.site" target="_blanck" class="text">{{detailOfBuilding.site}}</a>
+                                    <a [href]="detailOfBuilding.site" target="_blanck" class="no-wrap-text">{{detailOfBuilding.site}}</a>
                                 </ng-container>
                                 <ng-container *ngIf="!detailOfBuilding.site">-</ng-container>
                             </div>
@@ -199,10 +199,9 @@
                             </div>
                             <div class="option-value">
                                 <ng-container *ngIf="detailOfBuilding.eregistryUrl">
-                                    <a [href]="detailOfBuilding.eregistryUrl" target="_blanck" class="text">{{detailOfBuilding.eregistryUrl}}</a>
+                                    <a [href]="detailOfBuilding.eregistryUrl" target="_blanck" class="no-wrap-text">{{detailOfBuilding.eregistryUrl}}</a>
                                 </ng-container>
-                                <ng-container *ngIf="!detailOfBuilding.eregistryUrl">-</ng-container>
-                                
+                                <ng-container *ngIf="!detailOfBuilding.eregistryUrl">-</ng-container>  
                             </div>
                         </div>
 
@@ -211,4 +210,3 @@
             </mat-card>
         </mat-tab>
     </mat-tab-group>     
-</div>

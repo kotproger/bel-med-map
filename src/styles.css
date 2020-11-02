@@ -9,3 +9,37 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .none {
     display: none !important
 } 
+.no-wrap-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.record-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.record-container.active:hover{
+    background: whitesmoke; 
+    cursor: pointer;
+}
+.text-container {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 0; 
+}
+.p-0{
+    padding: 0 !important;
+}
+.p-16 {
+    padding: 0 16px;
+}
+.pt-8{
+    padding-top: 8px;
+}

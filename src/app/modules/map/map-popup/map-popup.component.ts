@@ -71,6 +71,7 @@ export class MapPopupComponent implements OnInit {
         eregistryUrl: 'https://new.2dr.ru/visit?region=2dr_geo_4065206&lpu=7af6dfae-6e75-46b6-9f15-3eaffd288a2e',
         usageType: 'Центры ОВП(СМ)'
     };
+
     constructor() { }
 
     ngOnInit(): void {
