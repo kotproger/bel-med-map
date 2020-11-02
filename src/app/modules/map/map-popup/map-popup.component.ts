@@ -4,8 +4,8 @@ import {
     BuildingsInOrganizationSet,
     SimpleObject,
     BuildingDetail
- } from '../../core/services/data/buildings.models';
-import { ICONS } from './data/mock-icons';
+ } from '../../../core/services/data/buildings.models';
+import { ICONS } from '../data/mock-icons';
 
 @Component({
     selector: 'app-map-popup',
