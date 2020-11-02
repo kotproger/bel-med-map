@@ -20,6 +20,12 @@ $map-app-warn: mat-palette($mat-red);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
+$roboto-font-path: "~roboto-fontface/fonts" !default;
+@import "~roboto-fontface/css/roboto/sass/roboto-fontface";
+
+$material-icons-font-path: '~material-icons/iconfont/';
+@import '~material-icons/iconfont/material-icons.scss';
+
 $map-app-theme: mat-light-theme((
   color: (
     primary: $map-app-primary,
