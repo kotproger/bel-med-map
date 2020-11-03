@@ -4,7 +4,7 @@ import { BuildingPoint } from './buildings.models';
 
 import { BuildingsService } from './buildings.service';
 
-import { ICONS } from '../../../modules/map/data/mock-icons';
+import { ICONS } from '../../../../modules/map/data/mock-icons';
 
 import VectorSource from 'ol/source/Vector';
 import Point from 'ol/geom/Point';

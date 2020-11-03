@@ -1,10 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy} from '@angular/core';
+import { BuildingDetailService } from '../../../core/services/data/buildings/building-detail.service';
+import { BehaviorSubject } from 'rxjs';
 import {
     BuildingsInOrganization,
     BuildingsInOrganizationSet,
     SimpleObject,
     BuildingDetail
- } from '../../../core/services/data/buildings.models';
+ } from '../../../core/services/data/buildings/buildings.models';
 import { ICONS } from '../data/mock-icons';
 
 @Component({
@@ -13,7 +15,7 @@ import { ICONS } from '../data/mock-icons';
     styleUrls: ['./map-popup.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapPopupComponent implements OnInit {
+export class MapPopupComponent implements OnInit, OnDestroy {
 
     // @Input() organizations: BuildingsInOrganization[]|null;
     @Input()
@@ -31,13 +33,14 @@ export class MapPopupComponent implements OnInit {
             : null;
 
         this.isOneBuilding = this.isOneOrganzation  && this._organizations[0].buildings.length === 1;
-        this.selectedBuilding  = this.isOneBuilding
+        this.onSelectBuilding(this.selectedOrganization, this.isOneBuilding
             ? this._organizations[0].buildings[0]
-            : null;
+            : null
+        );
 
-        this.viewIndex = this.isOneBuilding
-            ? 1
-            : 0;
+        // this.viewIndex = this.isOneBuilding
+        //     ? 1
+        //     : 0;
     }
 
     // массив организаций
@@ -54,31 +57,18 @@ export class MapPopupComponent implements OnInit {
     public selectedBuilding: SimpleObject = null;
     public viewIndex = 0;
 
-    public detailOfBuilding: BuildingDetail = {
-        buildingId: 1,
-        buildingName: 'Холоднянский ЦОВП (СМ)',
-        organizationId: 1,
-        organizationName: 'ОГБУЗ «Прохоровская центральная районная больница»',
-        address: 'Прохоровский район, с Холодное, ул Центральная, 7',
-        yearOfConstruction: 1988,
-        floors: 2,
-        totalArea: 155.1,
-        planCountVisits: 3,
-        email: 'test@test.com',
-        phone: '84724240013',
-        worktime: 'Пн-Сб: 08.00 - 14.00',
-        site: 'http://prohorovka-crb.belzdrav.ru/',
-        eregistryUrl: 'https://new.2dr.ru/visit?region=2dr_geo_4065206&lpu=7af6dfae-6e75-46b6-9f15-3eaffd288a2e',
-        usageType: 'Центры ОВП(СМ)'
-    };
+    public detailOfBuilding$: BehaviorSubject<BuildingDetail> = this.buildingDetailService.buildingSubj$;
 
-    constructor() { }
+    constructor(
+        public buildingDetailService: BuildingDetailService
+    ) { }
 
     ngOnInit(): void {
     }
 
     // выбор здания
     onSelectBuilding(organization: BuildingsInOrganization, building: SimpleObject): void {
+        // this.detailOfBuilding$ = null;
         this.selectedOrganization = organization;
         this.selectedBuilding = this.selectedBuilding === building
             ? null
@@ -86,5 +76,12 @@ export class MapPopupComponent implements OnInit {
         this.viewIndex = this.selectedBuilding
             ? 1
             : 0;
+
+        if (this.selectedBuilding) {
+            this.buildingDetailService.getBuilding(this.selectedBuilding.id);
+        }
+    }
+
+    ngOnDestroy(): void {
     }
 }

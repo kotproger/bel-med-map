@@ -25,8 +25,8 @@ export class HttpService {
         this.resetHeadersAndParams();
     }
 
-    get({ url, baseUrl = apiUrl }: RequestConfig): Observable<object> {
-        return this.request({ url, baseUrl, method: httpMethods.GET });
+    get({ url, baseUrl = apiUrl,  body = null}: RequestConfig): Observable<object> {
+        return this.request({ url, baseUrl, body, method: httpMethods.GET });
     }
 
     post({ url, baseUrl = apiUrl, body = null }: RequestConfig): Observable<object> {
@@ -72,7 +72,7 @@ export class HttpService {
         const options = {
             body,
             headers: this.headers,
-            params: this.params,
+            params: this.params
         };
         const absoluteUrl = `${baseUrl}${url}`;
         const request = this.httpClient.request(method, absoluteUrl, options);

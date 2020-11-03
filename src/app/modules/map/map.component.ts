@@ -2,11 +2,11 @@ import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, ChangeDetec
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-import { MapBuildingsService } from '../../core/services/data/map-buildings.service';
+import { MapBuildingsService } from '../../core/services/data/buildings/map-buildings.service';
 import {
     BuildingsInOrganization,
     BuildingsInOrganizationSet
-} from '../../core/services/data/buildings.models';
+} from '../../core/services/data/buildings/buildings.models';
 
 import Map from 'ol/Map';
 import View from 'ol/View';

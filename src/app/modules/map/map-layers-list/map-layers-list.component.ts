@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { MapBuildingsService } from '../../../core/services/data/map-buildings.service';
+import { MapBuildingsService } from '../../../core/services/data/buildings/map-buildings.service';
 import { Subscription } from 'rxjs';
 import { VectorLayer } from 'ol/layer/Vector';
 import { ICONS } from '../data/mock-icons';

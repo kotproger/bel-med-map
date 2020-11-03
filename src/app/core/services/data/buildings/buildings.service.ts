@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { HttpService, BackEndResponse } from '../http';
+import { HttpService, BackEndResponse } from '../../http';
 import { BuildingPoint } from './buildings.models';
 
 @Injectable({

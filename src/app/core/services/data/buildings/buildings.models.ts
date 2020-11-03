@@ -12,6 +12,7 @@ export interface BuildingPoint  {
     buildingName: string;
     organizationId: number;
     organizationName: string;
+    geoId: number;
     usageType?: string;
     lon: number;
     lat: number;
