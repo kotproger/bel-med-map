@@ -39,8 +39,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
-        private mapBuildingsService: MapBuildingsService
-    ) {}
+        private mapBuildingsService: MapBuildingsService,
+
+    ) {
+    }
 
     @ViewChild('med_map') medMapDiv: ElementRef;
     @ViewChild('tooltip') tooltipDiv: ElementRef;

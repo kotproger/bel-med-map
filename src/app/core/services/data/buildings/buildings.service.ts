@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { HttpService, BackEndResponse } from '../../http';
@@ -11,7 +11,7 @@ import { BuildingPoint } from './buildings.models';
 
 // Сервис получения списка строений для отображения на карте
 export class BuildingsService {
-    public buildingsSubj$ = new BehaviorSubject<BuildingPoint[]>([]);
+    public buildingsSubj$ = new ReplaySubject<BuildingPoint[]>(1);
     public buildings$: Observable<BuildingPoint[]> = this.buildingsSubj$.asObservable();
     constructor(
         private httpService: HttpService,

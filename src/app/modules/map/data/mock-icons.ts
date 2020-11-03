@@ -1,6 +1,6 @@
 import { environment } from 'src/environments/environment';
 
-import { BuildingIcon } from '../../../core/services/data/buildings.models';
+import { BuildingIcon } from '../../../core/services/data/buildings/buildings.models';
 
 export const ICONS: BuildingIcon = {
     'Центры ОВП(СМ)' : environment.iconUrl + 'assets/img/layers/ovp_32.png',

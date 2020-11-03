@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { ReplaySubject, Observable, Subscription } from 'rxjs';
+import { skipWhile } from 'rxjs/operators';
 import { BuildingPoint } from './buildings.models';
 
 import { BuildingsService } from './buildings.service';
@@ -22,11 +23,10 @@ import {
 @Injectable({
     providedIn: 'root'
 })
-
 // Сервис преобразования данных по строениям в структуры для отображения на карте
 export class MapBuildingsService {
     private subscription: Subscription;
-    public vectorLayersSubj$ = new BehaviorSubject<VectorLayer[]>([]);
+    public vectorLayersSubj$ = new ReplaySubject<VectorLayer[]>(1);
     public vectorLayers$: Observable<VectorLayer[]> = this.vectorLayersSubj$.asObservable();
 
     constructor(

@@ -1,4 +1,3 @@
-
 export interface GeoTree {
     id: number;
     pid: number;
@@ -10,5 +9,11 @@ export interface GeoTree {
     childs?: GeoTree[];
 }
 
-
-
+export interface GeoRecord {
+    id: number;
+    pid: number;
+    name: string;
+    typeShortName: string;
+    typeFullName: string;
+    level: number;
+}
