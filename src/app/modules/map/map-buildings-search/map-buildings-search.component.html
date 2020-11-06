@@ -8,10 +8,71 @@
     <mat-divider></mat-divider>
 
     <mat-card-content>   
-        <ng-container *ngIf="geoTree">
+        <ng-container >
    
-                есть все данные
+        <mat-form-field  >
+            <mat-label>Район / округ</mat-label>
+            <input 
+                matInput 
+                placeholder="Введите районы"  
+                type="text" 
+                [formControl]="selectedState" 
+                [matAutocomplete]="autoState"
+            >
+            <mat-autocomplete #autoState="matAutocomplete" [displayWith]="displayGeoFn">
+                <mat-option *ngFor="let state of filteredStatesList | async" [value]="state">
+                  {{state.name}} {{state.typeFullName ? state.typeFullName.toLowerCase() : ""}} 
+                </mat-option>
+            </mat-autocomplete>
+            
+            <button mat-icon-button matSuffix (click)="selectedState.setValue('')" 
+                *ngIf="selectedState.value != ''">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </mat-form-field>
 
+        <mat-form-field  >
+            <mat-label>Город / поселение</mat-label>
+            <input 
+                matInput 
+                placeholder="Введите районы" 
+                type="text" 
+                [formControl]="selectedCiti" 
+                [matAutocomplete]="autoCiti"
+            >
+            <mat-autocomplete #autoCiti="matAutocomplete" [displayWith]="displayGeoFn">
+                <mat-option *ngFor="let citi of filteredCitisList | async" [value]="citi">
+                  {{citi.name}} {{citi.typeFullName ? citi.typeFullName.toLowerCase() : ""}} 
+                </mat-option>
+            </mat-autocomplete>
+
+            <button mat-icon-button matSuffix (click)="selectedCiti.setValue('')" 
+                *ngIf="selectedCiti.value != ''">
+                <mat-icon>clear</mat-icon>
+            </button>
+
+        </mat-form-field>
+
+        <mat-form-field  >
+            <mat-label>Организация</mat-label>
+            <input 
+                matInput 
+                placeholder="Введите организацию" 
+                type="text" 
+                [formControl]="selectedOrganization" 
+                [matAutocomplete]="autoOrg"
+            >
+            <mat-autocomplete #autoOrg="matAutocomplete" [displayWith]="displayOrgFn">
+                <mat-option *ngFor="let org of filteredOrganizationsList| async" [value]="org">
+                  {{org.organization.name}} 
+                </mat-option>
+            </mat-autocomplete>
+
+            <button mat-icon-button matSuffix (click)="selectedOrganization.setValue('')" 
+                *ngIf="selectedOrganization.value != ''">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </mat-form-field>
             
         </ng-container>
     </mat-card-content>
