@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject, Observable, Subscription } from 'rxjs';
-import { skipWhile } from 'rxjs/operators';
-import { BuildingPoint } from './buildings.models';
+import { BuildingPoint, BuildingsSupportData } from './buildings.models';
 
 import { BuildingsService } from './buildings.service';
 
@@ -26,8 +25,8 @@ import {
 // Сервис преобразования данных по строениям в структуры для отображения на карте
 export class MapBuildingsService {
     private subscription: Subscription;
-    public vectorLayersSubj$ = new ReplaySubject<VectorLayer[]>(1);
-    public vectorLayers$: Observable<VectorLayer[]> = this.vectorLayersSubj$.asObservable();
+    public buildingsSupportDataSubj$ = new ReplaySubject<BuildingsSupportData>(1);
+    public buildingsSupportData$: Observable<BuildingsSupportData> = this.buildingsSupportDataSubj$.asObservable();
 
     constructor(
         private buildingsService: BuildingsService
@@ -37,29 +36,60 @@ export class MapBuildingsService {
     }
 
     // обработка получения массива зданий
-    public handleGetMapBuildings(buildings: BuildingPoint[]): void{
+    public handleGetMapBuildings(buildings: BuildingPoint[]): void {
+
+         // распределение знаний по группам
+        const buildingsSupportData: BuildingsSupportData = {};
+
         // обработка незаполненнных типов использований
         buildings.forEach(element => {
-            element.usageType  =  element.usageType || 'Прочие';
+            element.usageTypeId  =  element.usageTypeId || 'none'; // Id прочих
+            element.usageTypeName  =  element.usageTypeName || 'Нет данных'; // Id прочих
         });
 
         // распределение зданий по типу использования
-        const byUsageType = buildings.reduce((rezult, current) => {
+        const byusageTypeId = buildings.reduce((rezult, current) => {
             const future = new Feature(
                 new Point(olProj.fromLonLat([current.lon, current.lat]))
             );
             future.setProperties({
-                buildingId: current.buildingId,
-                buildingName: current.buildingName,
-                organizationId: current.organizationId,
-                organizationName: current.organizationName,
-                usageType: current.usageType
+                properties: {
+                    id: current.id,
+                    name: current.name,
+                    organizationId: current.organizationId,
+                    organizationName: current.organizationName,
+                    usageTypeId: current.usageTypeId,
+                    usageTypeName: current.usageTypeName
+                }
             });
 
-            if (rezult[current.usageType] !== undefined){
-                rezult[current.usageType].push(future);
+            if (rezult[current.usageTypeId] !== undefined){
+                rezult[current.usageTypeId].push(future);
+
+                const element = buildingsSupportData[current.usageTypeId];
+                element.buildinsArr.push(current);
+                element.buildinsObj[current.id] = current;
+                element.featuresArr.push(future);
+                element.featuresObj[current.id] = future;
+
             } else {
-                rezult[current.usageType] = [future];
+                rezult[current.usageTypeId] = [future];
+
+                buildingsSupportData[current.usageTypeId] = {
+                    usageTypeId: current.usageTypeId,
+                    usageTypeName: current.usageTypeName,
+                    buildinsArr: [current],
+                    buildinsObj: {
+                        [current.id]: current
+                    },
+                    featuresArr: [future],
+                    featuresObj: {
+                        [current.id]: future
+                    },
+                    layerInfo: null,
+                    layerUsage: true
+                };
+
             }
             return rezult;
         }, {});
@@ -69,10 +99,10 @@ export class MapBuildingsService {
         // хранение кэша стилей кластеров точек
         const styleCache = {};
 
-        for (const property of Object.keys(byUsageType)){
+        for (const property of Object.keys(byusageTypeId)){
 
             const vectorSource = new VectorSource({
-                features: byUsageType[property]
+                features: byusageTypeId[property]
             });
 
             const clusterSource = new ClusterSource({
@@ -126,18 +156,20 @@ export class MapBuildingsService {
                         return styles;
                     }
                 });
+
+            buildingsSupportData[property].layerInfo = vectorLayer;
             vectorLayer.set('name', property);
             vectorLayers.push(vectorLayer);
         }
-        this.setVectorLayers(vectorLayers);
+        this.setVectorLayers(buildingsSupportData);
     }
 
     public getMapBuildings(): void{
         this.buildingsService.getBuildings();
     }
 
-    public setVectorLayers(vectorLayers: VectorLayer[]): void{
-        this.vectorLayersSubj$.next(vectorLayers);
+    public setVectorLayers(vectorLayers: BuildingsSupportData): void{
+        this.buildingsSupportDataSubj$.next(vectorLayers);
     }
 
     // tslint:disable-next-line: use-lifecycle-interface
