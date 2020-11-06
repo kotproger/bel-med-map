@@ -10,16 +10,16 @@
             *ngFor="let item of layersList"
             (click)="onSelectLayer(item)"
         >   
-            <img [src]="icons[item.name]" alt="">  
+            <img [src]="icons[item.usageTypeId]" alt="">  
             <div class="text-container main"> 
                 <div class="no-wrap-text">
-                    {{item.name}}
+                    {{item.usageTypeName}}
                 </div>
             </div>
 
             <mat-checkbox 
                 class="example-margin" 
-                [(ngModel)]="item.checked"
+                [(ngModel)]="item.layerUsage"
                 (click)="onLayerCheckChange($event ,item)"
             ></mat-checkbox>
                 

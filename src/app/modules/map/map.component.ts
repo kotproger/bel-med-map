@@ -4,8 +4,12 @@ import { environment } from 'src/environments/environment';
 
 import { MapBuildingsService } from '../../core/services/data/buildings/map-buildings.service';
 import {
+    BuildingPoint,
     BuildingsInOrganization,
-    BuildingsInOrganizationSet
+    BuildingsInOrganizationSet,
+    SimpleObject,
+    BuildingsSupportData,
+    BuildingsSupportElement
 } from '../../core/services/data/buildings/buildings.models';
 
 import Map from 'ol/Map';
@@ -24,9 +28,9 @@ const mapZoom = 8;
 const initCoords = [36.5763, 50.5919];
 
 interface GetMapFeaturesAtPixel {
-    features: BuildingsInOrganization[];
+    features: BuildingsInOrganization<SimpleObject>[];
     lastFeature: any;
-    usageType: string|null;
+    usageType: BuildingPoint|null;
 }
 
 @Component({
@@ -60,8 +64,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         minZoom: 4
     };
 
-    clickedItems: BuildingsInOrganizationSet = null;
-    hoveredItems: BuildingsInOrganization[] = null;
+    clickedItems: BuildingsInOrganizationSet<SimpleObject> = null;
+    hoveredItems: BuildingsInOrganization<SimpleObject>[] = null;
     hoveredItemsPosition: any = null;
 
     ngAfterViewInit(): void {
@@ -100,10 +104,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         this.mapBuildingsService.getMapBuildings();
 
         // вывод векторных стоев на карту
-        this.subscription = this.mapBuildingsService.vectorLayersSubj$.subscribe((buildingsVectorLayers: VectorLayer[]) => {
+        this.subscription = this.mapBuildingsService.buildingsSupportDataSubj$.subscribe((buildingsVectorLayers: BuildingsSupportData) => {
+            const vectorLayers: BuildingsSupportElement[] = [];
+            for (const property of Object.keys(buildingsVectorLayers)){
+                vectorLayers.push(buildingsVectorLayers[property].layerInfo);
+            }
             this.map.addLayer(
                 this.layersGroup = new LayerGroup({
-                    layers: buildingsVectorLayers
+                    layers: vectorLayers
                 })
             );
         });
@@ -123,7 +131,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             // console.log(rezult);
             this.clickedItems = {
                 items: rezult.features,
-                usageType: rezult.usageType
+                usageTypeId: rezult.usageType ? rezult.usageType.usageTypeId : null,
+                usageTypeName: rezult.usageType ? rezult.usageType.usageTypeName : null
             };
             this.changeDetectorRef.detectChanges();
 
@@ -208,23 +217,23 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                 return {features: resultFeatures
                     .map(f => f.getProperties())
                     .reduce((rezult, current) => {
-                        if (rezult.flag[current.organizationId]){
-                            rezult.flag[current.organizationId].buildings.push({
-                                name: current.buildingName,
-                                id: current.buildingId
+                        if (rezult.flag[current.properties.organizationId]){
+                            rezult.flag[current.properties.organizationId].buildings.push({
+                                name: current.properties.name,
+                                id: current.properties.id
                             });
                         } else {
-                            rezult.flag[current.organizationId] = {
+                            rezult.flag[current.properties.organizationId] = {
                                 organization: {
-                                    name: current.organizationName,
-                                    id: current.organizationId,
+                                    name: current.properties.organizationName,
+                                    id: current.properties.organizationId,
                                 },
                                 buildings: [{
-                                    name: current.buildingName,
-                                    id: current.buildingId
+                                    name: current.properties.name,
+                                    id: current.properties.id
                                 }]
                             };
-                            rezult.rez.push(rezult.flag[current.organizationId]);
+                            rezult.rez.push(rezult.flag[current.properties.organizationId]);
                         }
                         return rezult;
                     }, {
@@ -232,7 +241,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                         flag: {}
                     }).rez,
                     lastFeature: feature,
-                    usageType: resultFeatures[0].getProperties().usageType
+                    usageType: resultFeatures[0].getProperties().properties
                 };
             }
         } else if (!feature){

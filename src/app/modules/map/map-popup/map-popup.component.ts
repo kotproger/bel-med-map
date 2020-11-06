@@ -19,9 +19,14 @@ export class MapPopupComponent implements OnInit, OnDestroy {
 
     // @Input() organizations: BuildingsInOrganization[]|null;
     @Input()
-    set organizationsSet(organizationsSet: BuildingsInOrganizationSet) {
-        this.usageType = organizationsSet
-        ? organizationsSet.usageType
+    set organizationsSet(organizationsSet: BuildingsInOrganizationSet<SimpleObject>) {
+
+        this.usageTypeId = organizationsSet
+        ? organizationsSet.usageTypeId
+        : null;
+
+        this.usageTypeName = organizationsSet
+        ? organizationsSet.usageTypeName
         : null;
 
         this._organizations = organizationsSet
@@ -37,23 +42,20 @@ export class MapPopupComponent implements OnInit, OnDestroy {
             ? this._organizations[0].buildings[0]
             : null
         );
-
-        // this.viewIndex = this.isOneBuilding
-        //     ? 1
-        //     : 0;
     }
 
     // массив организаций
     // tslint:disable-next-line: variable-name
-    public _organizations: BuildingsInOrganization[]|null;
-    public usageType: string;
+    public _organizations: BuildingsInOrganization<SimpleObject>[]|null;
+    public usageTypeId: string;
+    public usageTypeName: string;
     public icons = ICONS;
     // флаг наличия только одной организации
     public isOneOrganzation = false;
     // флаг наличия только одного здания
     public isOneBuilding = false;
 
-    public selectedOrganization: BuildingsInOrganization = null;
+    public selectedOrganization: BuildingsInOrganization<SimpleObject> = null;
     public selectedBuilding: SimpleObject = null;
     public viewIndex = 0;
 
@@ -67,8 +69,8 @@ export class MapPopupComponent implements OnInit, OnDestroy {
     }
 
     // выбор здания
-    onSelectBuilding(organization: BuildingsInOrganization, building: SimpleObject): void {
-        // this.detailOfBuilding$ = null;
+    onSelectBuilding(organization: BuildingsInOrganization<SimpleObject>, building: SimpleObject): void {
+
         this.selectedOrganization = organization;
         this.selectedBuilding = this.selectedBuilding === building
             ? null

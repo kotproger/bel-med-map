@@ -4,16 +4,18 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+// import { MatSliderModule } from '@angular/material/slider';
+// import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatBadgeModule } from '@angular/material/badge';
+// import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
-import { MatExpansionModule } from '@angular/material/expansion';
+// import { MatListModule } from '@angular/material/list';
+// import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
     declarations: [],
@@ -24,16 +26,18 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatCardModule,
         MatButtonModule,
         MatInputModule,
-        MatSliderModule,
-        MatSlideToggleModule,
+        // MatSliderModule,
+        // MatSlideToggleModule,
         MatTooltipModule,
         MatIconModule,
         MatTabsModule,
-        MatBadgeModule,
+        // MatBadgeModule,
         MatDividerModule,
-        MatListModule,
-        MatExpansionModule,
-        MatCheckboxModule
+        // MatListModule,
+        // MatExpansionModule,
+        MatCheckboxModule,
+        MatAutocompleteModule,
+        MatFormFieldModule
     ]
 })
 export class MaterialModule { }

@@ -4,11 +4,10 @@ import { Subscription } from 'rxjs';
 import { VectorLayer } from 'ol/layer/Vector';
 import { ICONS } from '../data/mock-icons';
 
-interface LayerListInfo {
-    layer: VectorLayer;
-    name: string;
-    checked: boolean;
-}
+import {
+    BuildingsSupportData,
+    BuildingsSupportElement
+ } from '../../../core/services/data/buildings/buildings.models';
 
 @Component({
     selector: 'app-map-layers-list',
@@ -23,7 +22,7 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
     @Input() map!: any;
     @Input() layersGroup!: any;
 
-    public layersList: LayerListInfo[];
+    public layersList: BuildingsSupportElement[];
     private subscription: Subscription;
 
     public icons = ICONS;
@@ -34,23 +33,24 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.subscription = this.mapBuildingsService.vectorLayersSubj$.subscribe((buildingsVectorLayers: VectorLayer[]) => {
-            this.layersList = buildingsVectorLayers.map( lay => {
-                return {
-                    name: lay.get('name'),
-                    layer: lay,
-                    checked: true
-                };
-            });
+        this.subscription = this.mapBuildingsService.buildingsSupportDataSubj$.subscribe((buildingsVectorLayers: BuildingsSupportData) => {
+
+            const layers: BuildingsSupportElement[] = [];
+            for (const property of Object.keys(buildingsVectorLayers)){
+                layers.push(buildingsVectorLayers[property]);
+            }
+
+            this.layersList = layers;
             this.changeDetectorRef.detectChanges();
         });
     }
 
     // изменение z-index выбранного слоя (на передний план)
-    onSelectLayer(layerInfo: LayerListInfo): void {
-        if (layerInfo.checked) {
+    onSelectLayer(layerInfo: BuildingsSupportElement): void {
+
+        if (layerInfo.layerUsage) {
             this.layersList.forEach( element => {
-                element.layer.setZIndex(element === layerInfo
+                element.layerInfo.setZIndex(element === layerInfo
                     ? 1
                     : 0);
             });
@@ -58,12 +58,15 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
     }
 
     // обработка видимости слоя
-    onLayerCheckChange(evt: Event, layerInfo: LayerListInfo): void {
-        layerInfo.checked = !layerInfo.checked;
-        if (layerInfo.checked) {
-            this.layersGroup.getLayers().insertAt(0, layerInfo.layer);
+    onLayerCheckChange(evt: Event, layer: BuildingsSupportElement): void {
+        layer.layerUsage = !layer.layerUsage;
+
+        // this.mapBuildingsService.buildingsSupportData[layerInfo.name].layerUsage = layerInfo.layerUsage;
+
+        if (layer.layerUsage) {
+            this.layersGroup.getLayers().insertAt(0, layer.layerInfo);
         } else {
-            this.layersGroup.getLayers().remove(layerInfo.layer);
+            this.layersGroup.getLayers().remove(layer.layerInfo);
         }
         evt.preventDefault();
     }
