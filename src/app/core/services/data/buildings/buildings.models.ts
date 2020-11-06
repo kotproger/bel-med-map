@@ -1,12 +1,15 @@
+// структура хранилища иконок
 export interface BuildingIcon  {
     [key: string]: string;
 }
 
+// минимальные данные об объекте (организация, здание....)
 export interface SimpleObject  {
     name: string;
     id: string;
 }
 
+// краткая информация о здании
 export interface BuildingPoint  {
     id: number;
     name: string;
@@ -19,21 +22,18 @@ export interface BuildingPoint  {
     lat: number;
 }
 
+// список зданий одной организации
 export interface BuildingsInOrganization<T>  {
     organization: SimpleObject ;
     buildings: T[];
 }
+// список зданий в массиве организаций, сгрупперованных по типу использования
 export interface BuildingsInOrganizationSet<E>  {
     items: BuildingsInOrganization<E>[];
-    usageTypeId?: string;
-    usageTypeName?: string;
+    usageType?: SimpleObject;
 }
 
-
-export interface BuildingsGroupByOrganizations<K>  {
-    [key: string]: BuildingsInOrganization<K>;
-}
-
+// подробная информация о здании
 export interface BuildingDetail {
     id: number;
     name: string;
@@ -51,8 +51,12 @@ export interface BuildingDetail {
     worktime: string;
     usageTypeId?: string;
     usageTypeName?: string;
+    lon: number;
+    lat: number;
 }
 
+
+// вспомогательная структура - список зданий и их массив, список гео-точек и их массив, слой с гео-точками и его используемость
 export interface BuildingsSupportElement {
     usageTypeId?: string;
     usageTypeName?: string;

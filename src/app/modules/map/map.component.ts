@@ -30,7 +30,7 @@ const initCoords = [36.5763, 50.5919];
 interface GetMapFeaturesAtPixel {
     features: BuildingsInOrganization<SimpleObject>[];
     lastFeature: any;
-    usageType: BuildingPoint|null;
+    usageType: SimpleObject|null;
 }
 
 @Component({
@@ -44,9 +44,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
         private mapBuildingsService: MapBuildingsService,
-
-    ) {
-    }
+    ) { }
 
     @ViewChild('med_map') medMapDiv: ElementRef;
     @ViewChild('tooltip') tooltipDiv: ElementRef;
@@ -65,6 +63,8 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     };
 
     clickedItems: BuildingsInOrganizationSet<SimpleObject> = null;
+    searchedItems: BuildingsInOrganizationSet<BuildingPoint> = null;
+
     hoveredItems: BuildingsInOrganization<SimpleObject>[] = null;
     hoveredItemsPosition: any = null;
 
@@ -131,8 +131,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             // console.log(rezult);
             this.clickedItems = {
                 items: rezult.features,
-                usageTypeId: rezult.usageType ? rezult.usageType.usageTypeId : null,
-                usageTypeName: rezult.usageType ? rezult.usageType.usageTypeName : null
+                usageType: rezult.usageType
             };
             this.changeDetectorRef.detectChanges();
 
@@ -213,7 +212,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             if (resultFeatures && resultFeatures.length){
 
                 // группировка зданий по организациям
-
+                const prop = resultFeatures[0].getProperties().properties;
                 return {features: resultFeatures
                     .map(f => f.getProperties())
                     .reduce((rezult, current) => {
@@ -241,7 +240,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                         flag: {}
                     }).rez,
                     lastFeature: feature,
-                    usageType: resultFeatures[0].getProperties().properties
+                    usageType: {id: prop.usageTypeId, name: prop.usageTypeName}
                 };
             }
         } else if (!feature){
@@ -256,6 +255,10 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             lastFeature: feature,
             usageType: null
         };
+    }
+
+    onSearchBuildings(evt: BuildingsInOrganizationSet<BuildingPoint> ): void {
+        this.searchedItems = evt;
     }
 
     ngOnDestroy(): void {

@@ -8,8 +8,7 @@
     <mat-divider></mat-divider>
 
     <mat-card-content>   
-        <ng-container >
-   
+
         <mat-form-field  >
             <mat-label>Район / округ</mat-label>
             <input 
@@ -74,6 +73,10 @@
             </button>
         </mat-form-field>
             
-        </ng-container>
     </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button [disabled]="!listOfOrganizations || listOfOrganizations.length === 0">Отобразить результат</button>
+    </mat-card-actions>
+
 </mat-card>

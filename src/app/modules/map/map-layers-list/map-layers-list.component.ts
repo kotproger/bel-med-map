@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MapBuildingsService } from '../../../core/services/data/buildings/map-buildings.service';
 import { Subscription } from 'rxjs';
-import { VectorLayer } from 'ol/layer/Vector';
 import { ICONS } from '../data/mock-icons';
 
 import {
@@ -59,10 +58,8 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
 
     // обработка видимости слоя
     onLayerCheckChange(evt: Event, layer: BuildingsSupportElement): void {
+
         layer.layerUsage = !layer.layerUsage;
-
-        // this.mapBuildingsService.buildingsSupportData[layerInfo.name].layerUsage = layerInfo.layerUsage;
-
         if (layer.layerUsage) {
             this.layersGroup.getLayers().insertAt(0, layer.layerInfo);
         } else {

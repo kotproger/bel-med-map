@@ -1,9 +1,18 @@
 
 
 <div class="row">
-    <app-map-popup [organizationsSet]="clickedItems"></app-map-popup>
+
+    <app-map-popup 
+        [inGroupOrganizationsSet]="clickedItems"
+        [inSearchOganizationsSet]="searchedItems"
+    ></app-map-popup>
+
     <app-map-layers-list [map]="map" [layersGroup]="layersGroup"></app-map-layers-list>
-    <app-map-buildings-search></app-map-buildings-search>
+
+    <app-map-buildings-search
+        (searchBuildingsEvent)="onSearchBuildings($event)"
+    ></app-map-buildings-search>
+
     <div class="tooltip" 
     #tooltip 
     [ngClass]="{'no-display': !hoveredItems}"

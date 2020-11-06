@@ -5,6 +5,8 @@ import { take } from 'rxjs/operators';
 import { HttpService, BackEndResponse } from '../../http';
 import { BuildingPoint } from './buildings.models';
 
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +23,7 @@ export class BuildingsService {
 
     public getBuildings(): void {
         this.httpService.get({
-            url: 'oracle/buildings.php',
+            url: environment.phpUrl + '/get_buildings.php',
             body: ''
         })
         .pipe(

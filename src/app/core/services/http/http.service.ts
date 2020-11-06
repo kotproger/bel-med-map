@@ -6,9 +6,7 @@ import { httpMethods } from '../../../constants';
 
 import { BaseRequestConfig, RequestConfig } from './http.models';
 
-import { environment } from 'src/environments/environment';
-
-const apiUrl = environment.phpUrl + 'php_api/';
+const apiUrl = './php_api/';
 
 interface ObjectWithStringValues {
     [key: string]: string;

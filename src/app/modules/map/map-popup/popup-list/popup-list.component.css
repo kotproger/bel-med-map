@@ -69,3 +69,6 @@ mat-card{
     max-height: 456px;
     overflow-y: auto;
 }
+.in-list-icon{
+    padding-right: 8px;
+}

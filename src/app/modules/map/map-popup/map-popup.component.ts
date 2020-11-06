@@ -1,13 +1,16 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input, OnDestroy} from '@angular/core';
-import { BuildingDetailService } from '../../../core/services/data/buildings/building-detail.service';
-import { BehaviorSubject } from 'rxjs';
+
 import {
+    BuildingPoint,
     BuildingsInOrganization,
     BuildingsInOrganizationSet,
-    SimpleObject,
-    BuildingDetail
+    SimpleObject
  } from '../../../core/services/data/buildings/buildings.models';
 import { ICONS } from '../data/mock-icons';
+
+const GROUPDISPALYINDEX = 0;
+const SEARCHDISPALYINDEX = 1;
+const DETAILDISPALYINDEX = 2;
 
 @Component({
     selector: 'app-map-popup',
@@ -17,71 +20,99 @@ import { ICONS } from '../data/mock-icons';
 })
 export class MapPopupComponent implements OnInit, OnDestroy {
 
-    // @Input() organizations: BuildingsInOrganization[]|null;
     @Input()
-    set organizationsSet(organizationsSet: BuildingsInOrganizationSet<SimpleObject>) {
+    set inGroupOrganizationsSet(inGroupOrganizationsSet: BuildingsInOrganizationSet<SimpleObject>) {
 
-        this.usageTypeId = organizationsSet
-        ? organizationsSet.usageTypeId
+        this.usageType = inGroupOrganizationsSet
+        ? inGroupOrganizationsSet.usageType
         : null;
 
-        this.usageTypeName = organizationsSet
-        ? organizationsSet.usageTypeName
-        : null;
-
-        this._organizations = organizationsSet
-            ? organizationsSet.items
+        this.inGroupOrganizations = inGroupOrganizationsSet
+            ? inGroupOrganizationsSet.items
             : null;
-        this.isOneOrganzation = this._organizations && this._organizations.length === 1;
+
+        this.parentViewIndex = this.inGroupOrganizations
+            ? GROUPDISPALYINDEX
+            : SEARCHDISPALYINDEX;
+
+        this.isOneOrganzation = this.inGroupOrganizations && this.inGroupOrganizations.length === 1;
         this.selectedOrganization  = this.isOneOrganzation
-            ? this._organizations[0]
+            ? this.inGroupOrganizations[0].organization
             : null;
 
-        this.isOneBuilding = this.isOneOrganzation  && this._organizations[0].buildings.length === 1;
-        this.onSelectBuilding(this.selectedOrganization, this.isOneBuilding
-            ? this._organizations[0].buildings[0]
-            : null
-        );
+        this.isOneBuilding = this.isOneOrganzation  && this.inGroupOrganizations[0].buildings.length === 1;
+        this.onSelectBuilding({
+            organization: this.selectedOrganization,
+            building:  this.isOneBuilding
+                ? this.inGroupOrganizations[0].buildings[0]
+                : null
+        });
     }
 
-    // массив организаций
-    // tslint:disable-next-line: variable-name
-    public _organizations: BuildingsInOrganization<SimpleObject>[]|null;
-    public usageTypeId: string;
-    public usageTypeName: string;
+    @Input()
+    set inSearchOganizationsSet(inSearchOganizationsSet: BuildingsInOrganization<BuildingPoint>[]) {
+
+        this.inSearchOrganizations = inSearchOganizationsSet
+            ? inSearchOganizationsSet
+            : null;
+
+        this.parentViewIndex = this.inSearchOrganizations
+            ? SEARCHDISPALYINDEX
+            : GROUPDISPALYINDEX;
+
+        this.isOneOrganzation = this.inSearchOrganizations && this.inSearchOrganizations.length === 1;
+        this.selectedOrganization  = this.isOneOrganzation
+            ? this.inSearchOrganizations[0].organization
+            : null;
+
+        this.isOneBuilding = this.isOneOrganzation  && this.inSearchOrganizations[0].buildings.length === 1;
+        this.onSelectBuilding({
+            organization: this.selectedOrganization,
+            building:  this.isOneBuilding
+                ? this.inSearchOrganizations[0].buildings[0]
+                : null
+        });
+    }
+
+    // массив организаций для отображения значений по клику
+    public inGroupOrganizations: BuildingsInOrganization<SimpleObject>[];
+    // массив организаций для отображения значений результатов отбора
+    public inSearchOrganizations: BuildingsInOrganization<BuildingPoint>[];
+    public usageType: SimpleObject;
+
     public icons = ICONS;
     // флаг наличия только одной организации
     public isOneOrganzation = false;
     // флаг наличия только одного здания
     public isOneBuilding = false;
 
-    public selectedOrganization: BuildingsInOrganization<SimpleObject> = null;
-    public selectedBuilding: SimpleObject = null;
-    public viewIndex = 0;
+    public selectedOrganization: SimpleObject = null;
+    public selectedBuilding: SimpleObject | BuildingPoint = null;
 
-    public detailOfBuilding$: BehaviorSubject<BuildingDetail> = this.buildingDetailService.buildingSubj$;
+    public viewIndex = 0;
+    public parentViewIndex: number;
 
     constructor(
-        public buildingDetailService: BuildingDetailService
     ) { }
 
     ngOnInit(): void {
     }
 
     // выбор здания
-    onSelectBuilding(organization: BuildingsInOrganization<SimpleObject>, building: SimpleObject): void {
+    onSelectBuilding(evt): void {
+        const {building, organization} = evt;
 
         this.selectedOrganization = organization;
-        this.selectedBuilding = this.selectedBuilding === building
-            ? null
-            : building;
-        this.viewIndex = this.selectedBuilding
-            ? 1
-            : 0;
+        this.selectedBuilding = building;
 
-        if (this.selectedBuilding) {
-            this.buildingDetailService.getBuilding(this.selectedBuilding.id);
-        }
+        this.viewIndex = this.selectedBuilding
+            ? DETAILDISPALYINDEX
+            : this.parentViewIndex;
+    }
+
+    onReturn(evt: number): void {
+        this.viewIndex = evt;
+        this.selectedBuilding = null;
     }
 
     ngOnDestroy(): void {

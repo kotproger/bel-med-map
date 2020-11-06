@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output} from '@angular/core';
 import { combineLatest, Subscription, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FormControl, ValidatorFn, AbstractControl, Validators } from '@angular/forms';
@@ -15,13 +15,13 @@ import {
 } from '../../../core/services/data/buildings/buildings.models';
 
 // валидатор на заполнение структурой геообъекта
-export function geoObjectValidator(): ValidatorFn {
+export function objectValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
         const testValue = control.value;
 
         return !testValue
             ? null
-            : testValue.id
+            : testValue.id || testValue.organization
                 ? null
                 : {geoObject: {value: control.value}};
     };
@@ -35,7 +35,7 @@ export function geoObjectValidator(): ValidatorFn {
 })
 export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
 
-    // public geoTree: GeoTree[];
+    @Output() searchBuildingsEvent = new EventEmitter<BuildingsInOrganization<BuildingPoint>[]>();
 
     // отфильтрованные значения полей ввода для автокомплита
     filteredStatesList: Observable<GeoTree[]>;
@@ -45,9 +45,9 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
     private subscriptions: Subscription[] = [];
 
     // контролы полей ввода
-    selectedState = new FormControl({value: '', disabled: false}, [Validators.required, geoObjectValidator()]);
-    selectedCiti = new FormControl({value: '', disabled: true}, geoObjectValidator());
-    selectedOrganization = new FormControl({value: '', disabled: true});
+    selectedState = new FormControl({value: '', disabled: false}, [Validators.required, objectValidator()]);
+    selectedCiti = new FormControl({value: '', disabled: true}, objectValidator());
+    selectedOrganization = new FormControl({value: '', disabled: true}, objectValidator());
 
     // варианты выбора для фильтров
     listOfStates: GeoTree[] = [];
@@ -116,13 +116,21 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
                     this.selectedCiti.disable();
                     this.selectedOrganization.disable();
                 }
-                // this.listOfOrganizations = [];
+                //this.listOfOrganizations = [];
                 this.onChengeFilters();
             }));
 
             // при изменении значения поля ввода городов
             this.subscriptions.push(this.selectedCiti.valueChanges.subscribe(() => {
                 this.onChengeFilters();
+            }));
+            // при изменении значения поля ввода органзаций
+            this.subscriptions.push(this.selectedOrganization.valueChanges.subscribe(organization => {
+                this.searchBuildingsEvent.emit(
+                    organization && this.selectedOrganization.valid
+                        ? [organization]
+                        : this.listOfOrganizations
+                );
             }));
 
             this.changeDetectorRef.detectChanges();
@@ -132,6 +140,7 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.mapBuildingsSearchService.filtredBildingsSubj$.subscribe( filtredBuildsByOrg => {
             this.listOfOrganizations = filtredBuildsByOrg;
             this.selectedOrganization.updateValueAndValidity();
+            this.searchBuildingsEvent.emit(filtredBuildsByOrg);
         }));
     }
 
@@ -176,8 +185,10 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
         if (geoObject && geoObject !== this.lastGeoObject) {
             this.listOfOrganizations = [];
             this.selectedOrganization.setValue('');
-            // TODO закончить блеать этот поиск!
             this.mapBuildingsSearchService.startSearch(geoObject);
+        } else if (!geoObject) {
+            this.searchBuildingsEvent.emit(null);
+            this.listOfOrganizations = [];
         }
 
         this.lastGeoObject = geoObject;

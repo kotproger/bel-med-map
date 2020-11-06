@@ -5,6 +5,8 @@ import { take } from 'rxjs/operators';
 import { HttpService, BackEndResponse } from '../../http';
 import { GeoRecord, GeoTree } from './geo.models';
 
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,7 +26,7 @@ export class GeoTreeService {
     public getGeoTree(): void {
         this.geoTreeSubj$.next(null);
         this.httpService.get({
-                url: 'oracle/geo-tree.php'
+                url: environment.phpUrl + '/get_geo_tree.php'
             })
             .pipe(
                 take(1),

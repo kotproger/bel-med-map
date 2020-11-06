@@ -10,8 +10,13 @@ mat-form-field {
     width: 100%;
 }
 mat-card-content{
-    padding: 8px 16px  0 16px!important
+    padding: 8px 16px  0 16px!important;
+    margin-bottom: 0px;
 }
 mat-card {
     padding: 16px 0 0 0 !important;
+}
+mat-card-actions {
+    text-align: center;
+    padding: 0 0 8px 0 !important
 }

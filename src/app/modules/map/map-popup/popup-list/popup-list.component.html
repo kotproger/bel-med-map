@@ -1,0 +1,51 @@
+<mat-card>
+    <mat-card-header class="popup-fix">
+        <mat-card-title>{{title}}</mat-card-title>
+    
+            <mat-card-subtitle >{{usageType ? usageType.name : ' '}}</mat-card-subtitle>
+            <div class="mat-card-avatar" *ngIf="usageType">
+                <img [src]="icons[usageType.id]" alt="">
+            </div>
+
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+        <ng-container *ngFor="let item of organizations">
+
+            <div class="record-container p-16 pt-8" 
+                [matTooltip]="item.organization.name"
+                matTooltipPosition="right"
+            >
+                <div class="text-container main"> 
+                    <div class="no-wrap-text">
+                        <u>{{item.organization.name}}</u>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="record-container active p-16" 
+                    *ngFor="let build of item.buildings"
+                    [matTooltip]="build.name"
+                    matTooltipPosition="right"
+                    (click)="onSelectBuilding(item.organization, build)"
+                    
+                > 
+                    <ng-container *ngIf="build.usageTypeId">
+                        <img class="in-list-icon" [src]="icons[build.usageTypeId]" alt="">
+                    </ng-container>
+                    
+                    <div class="text-container second"> 
+                        <div class="no-wrap-text">
+                            <ng-container *ngIf="!build.usageTypeId"> • </ng-container> {{build.name}}
+                        </div>
+                    </div>
+                    <mat-icon  class="icon">keyboard_arrow_right</mat-icon>
+                </div>
+            </div>
+            
+        </ng-container>
+    </mat-card-content>
+</mat-card>

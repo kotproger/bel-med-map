@@ -43,3 +43,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .pt-8{
     padding-top: 8px;
 }
+.in-list-icon{
+    height: 24px;
+}

@@ -1,214 +1,38 @@
 
-<mat-tab-group [(selectedIndex)]="viewIndex" disablePagination="true" class="fit-to-content mat-card p-0" *ngIf="_organizations">
+<mat-tab-group 
+    [(selectedIndex)]="viewIndex" 
+    disablePagination="true" 
+    class="fit-to-content mat-card p-0" 
+    *ngIf="inGroupOrganizations || inSearchOrganizations"
+>
     <mat-tab > 
-        <mat-card>
-            <mat-card-header class="popup-fix">
-                <mat-card-title>Список зданий в группе</mat-card-title>
-                <mat-card-subtitle>{{usageTypeName}}</mat-card-subtitle>
-                <div class="mat-card-avatar" *ngIf="usageTypeId">
-                    <img [src]="icons[usageTypeId]" alt="">
-                </div>
-            </mat-card-header>
+        <app-popup-list
+            [organizations]="inGroupOrganizations"
+            [usageType]="usageType"
+            (selectBuildingEvent)="onSelectBuilding($event)"    
+            title="Список зданий в группе"
+        >
+        </app-popup-list>
+    </mat-tab>
 
-            <mat-divider></mat-divider>
-
-            <mat-card-content>
-                <ng-container *ngFor="let item of _organizations">
-
-                    <div class="record-container p-16 pt-8" 
-                        [matTooltip]="item.organization.name"
-                        matTooltipPosition="right"
-                    >
-                        <div class="text-container main"> 
-                            <div class="no-wrap-text">
-                                <u>{{item.organization.name}}</u>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="record-container active p-16" 
-                            *ngFor="let build of item.buildings"
-                            [matTooltip]="build.name"
-                            matTooltipPosition="right"
-                            (click)="onSelectBuilding(item, build)"
-                            
-                        >
-                            <div class="text-container second"> 
-                                <div class="no-wrap-text">
-                                    • {{build.name}}
-                                </div>
-                            </div>
-                            <mat-icon  class="icon">keyboard_arrow_right</mat-icon>
-                        </div>
-                    </div>
-                    
-                </ng-container>
-            </mat-card-content>
-        </mat-card>
+    <mat-tab > 
+        <app-popup-list
+            [organizations]="inSearchOrganizations"
+            (selectBuildingEvent)="onSelectBuilding($event)"   
+            title="Результаты поиска"
+        >
+        </app-popup-list>
     </mat-tab>
 
     <mat-tab>
-        <mat-card>
-
-            <mat-card-header class="popup-fix">
-                <mat-card-title
-                    [matTooltip]="selectedOrganization ? selectedOrganization.organization.name : ''"
-                    matTooltipPosition="right"
-                    class="no-wrap-text"
-                >
-                    {{selectedOrganization ? selectedOrganization.organization.name : ''}}
-                </mat-card-title>
-                <mat-card-subtitle>{{usageTypeName}}</mat-card-subtitle>
-                <div class="mat-card-avatar" *ngIf="usageTypeId">
-                    <img [src]="icons[usageTypeId]" alt="">
-                </div>
-            </mat-card-header>
-
-            <mat-divider></mat-divider>   
-
-            <mat-card-content>
-                <div class="record-container p-16" 
-                    *ngIf="!isOneBuilding"
-                    matTooltip="К списку зданий"
-                    matTooltipPosition="right"
-                    (click)="onSelectBuilding(null, selectedBuilding)"
-                    [ngClass]="{ 'active': !isOneBuilding}"
-                >
-                    
-                    <mat-icon  class="icon" *ngIf="!isOneBuilding">keyboard_arrow_left</mat-icon>  
-                    <div class="text-container main"> 
-                        <div class="no-wrap-text">
-                            К списку зданий 
-                        </div>
-                    </div>
-                    
-                </div>
-                
-                <div class="p-16 pt-8" *ngIf="selectedBuilding">
-                    {{selectedBuilding.name}}
-                </div>
-                
-                <div  class="options-lest" *ngIf="detailOfBuilding$ | async">
-                    
-                    <div style="display: flex;
-                    flex-direction: row;">
-
-                        <div class="option-container" style="width: 160px;">
-                            <div class="record-container p-16">
-                                <mat-icon  class="option-icon">date_range</mat-icon> 
-                                <label>Год постройки</label>   
-                            </div>
-                            <div class="option-value">
-                                {{detailOfBuilding$.value.yearOfConstruction}}
-                            </div>
-                        </div>
-
-                        <div class="option-container">
-                            <div class="record-container p-16">
-                                <mat-icon  class="option-icon">people</mat-icon> 
-                                <label>Посещений в смену</label>   
-                            </div>
-                            <div class="option-value">
-                                {{detailOfBuilding$.value.planCountVisits}}
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    <div style="display: flex;
-                    flex-direction: row;">
-
-                        <div class="option-container" style="width: 160px;">
-                            <div class="record-container p-16">
-                                <mat-icon  class="option-icon">bar_chart</mat-icon> 
-                                <label>Этажей</label>   
-                            </div>
-                            <div class="option-value">
-                                {{detailOfBuilding$.value.floors}}
-                            </div>
-                        </div>
-
-                        <div class="option-container">
-                            <div class="record-container p-16">
-                                <mat-icon  class="option-icon">crop_square</mat-icon> 
-                                <label>Общая площадь, кв.м.</label>   
-                            </div>
-                            <div class="option-value">
-                                {{detailOfBuilding$.value.totalArea}}
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    <div class="option-container">
-                        <div class="record-container p-16">
-                            <mat-icon  class="option-icon">location_on</mat-icon> 
-                            <label>Адрес</label>   
-                        </div>
-                        <div class="option-value">
-                            {{detailOfBuilding$.value.address}}
-                        </div>
-                    </div>
-
-                    <div class="option-container">
-                        <div class="record-container p-16">
-                            <mat-icon  class="option-icon">access_time</mat-icon> 
-                            <label>Время работы</label>   
-                        </div>
-                        <div class="option-value">
-                            {{detailOfBuilding$.value.worktime}}
-                        </div>
-                    </div>
-
-                    <div class="option-container">
-                        <div class="record-container p-16">
-                            <mat-icon  class="option-icon">phone</mat-icon> 
-                            <label>Телефон</label>   
-                        </div>
-                        <div class="option-value">
-                            {{detailOfBuilding$.value.phone}}
-                        </div>
-                    </div>
-
-                    <div class="option-container">
-                        <div class="record-container p-16">
-                            <mat-icon  class="option-icon">email</mat-icon> 
-                            <label>Электронная почта</label>   
-                        </div>
-                        <div class="option-value">
-                            {{detailOfBuilding$.value.email}}
-                        </div>
-                    </div>
-
-                    <div class="option-container">
-                        <div class="record-container p-16">
-                            <mat-icon  class="option-icon">link</mat-icon> 
-                            <label>Официальный сайт</label>   
-                        </div>
-                        <div class="option-value">
-                            <ng-container *ngIf="detailOfBuilding$.value.site">
-                                <a [href]="detailOfBuilding$.value.site" target="_blanck" class="no-wrap-text">{{detailOfBuilding$.value.site}}</a>
-                            </ng-container>
-                            <ng-container *ngIf="!detailOfBuilding$.value.site">-</ng-container>
-                        </div>
-                    </div>
-
-                    <div class="option-container">
-                        <div class="record-container p-16">
-                            <mat-icon  class="option-icon">assignment</mat-icon> 
-                            <label>Электронная регистратура</label>   
-                        </div>
-                        <div class="option-value">
-                            <ng-container *ngIf="detailOfBuilding$.value.eregistryUrl">
-                                <a [href]="detailOfBuilding$.value.eregistryUrl" target="_blanck" class="no-wrap-text">{{detailOfBuilding$.value.eregistryUrl}}</a>
-                            </ng-container>
-                            <ng-container *ngIf="!detailOfBuilding$.value.eregistryUrl">-</ng-container>  
-                        </div>
-                    </div>
-
-                </div>
-            </mat-card-content>
-        </mat-card>
+        <app-popup-detail
+            [building]="selectedBuilding"   
+            [organization]="selectedOrganization ? selectedOrganization : null" 
+            [isOneBuilding]="isOneBuilding"
+            [usageType]="usageType"
+            [fromId]="parentViewIndex" 
+            (returnEvent)="onReturn($event)"
+        >
+        </app-popup-detail>
     </mat-tab>
 </mat-tab-group>     

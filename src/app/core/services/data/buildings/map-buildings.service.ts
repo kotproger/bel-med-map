@@ -114,31 +114,26 @@ export class MapBuildingsService {
                     source: clusterSource,
                     style: feature => {
                         const size = feature.get('features').length;
-                        const styleName = property + '_' + size;
-                        const style = styleCache[styleName];
 
-                        if (style) {
-                            return style;
+                        // получить или создать стиль иконки
+                        if (!styleCache[property]) {
+                            styleCache[property] = new Style({
+                                image: new Icon({
+                                    src: ICONS[property],
+                                    anchor: [0.5, 0],
+                                    anchorOrigin: 'bottom-left'
+                                })
+                            });
                         }
-
-                        // создание иконки маркера
-                        const styles = [new Style({
-                            image: new Icon({
-                                src: ICONS[property],
-                                anchor: [0.5, 0],
-                                anchorOrigin: 'bottom-left'
-                            })
-                        })];
+                        const imgStyle = styleCache[property];
 
                         // если в кластере более 1 элемента - добавить стиль подписи
                         if (size > 1) {
-                            styles.push(
-                                new Style({
-                                    image: new Icon({
-                                        src: ICONS[property],
-                                        anchor: [0.5, 0],
-                                        anchorOrigin: 'bottom-left'
-                                    }),
+
+                            const styleName = 'text' + size;
+
+                            if (!styleCache[styleName]) {
+                                styleCache[styleName] = new Style({
                                     text: new Text({
                                         text: size + '',
                                         scale: 1.1,
@@ -149,11 +144,14 @@ export class MapBuildingsService {
                                         }),
                                         padding: [0, -2, -2, 0]
                                     })
-                                })
-                            );
+                                });
+                            }
+
+                            return [imgStyle, styleCache[styleName]];
+
+                        } else {
+                            return imgStyle;
                         }
-                        styleCache[styleName] = styles;
-                        return styles;
                     }
                 });
 

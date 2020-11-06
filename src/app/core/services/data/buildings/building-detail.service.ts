@@ -5,6 +5,8 @@ import { take } from 'rxjs/operators';
 import { HttpService, BackEndResponse } from '../../http';
 import { BuildingDetail } from './buildings.models';
 
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,17 +22,19 @@ export class BuildingDetailService {
     }
 
     public getBuilding(id): void {
-        this.buildingSubj$.next(null);
-        this.httpService.setParam('id', id)
-            .get({
-                url: 'oracle/building.php',
-                body: id
-
-            })
-            .pipe(
-                take(1),
-            )
-            .subscribe(this.handleGetBuilding);
+        if (id === null) {
+            this.buildingSubj$.next(null);
+        } else {
+            this.httpService.setParam('id', id)
+                .get({
+                    url: environment.phpUrl + '/get_building_detail.php',
+                    body: id
+                })
+                .pipe(
+                    take(1),
+                )
+                .subscribe(this.handleGetBuilding);
+        }
     }
 
     public setBuilding(building: BuildingDetail): void {
