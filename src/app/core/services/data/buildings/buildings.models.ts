@@ -8,33 +8,35 @@ export interface SimpleObject  {
 }
 
 export interface BuildingPoint  {
-    buildingId: number;
-    buildingName: string;
+    id: number;
+    name: string;
     organizationId: number;
     organizationName: string;
     geoId: number;
-    usageType?: string;
+    usageTypeId?: string;
+    usageTypeName?: string;
     lon: number;
     lat: number;
 }
 
-export interface BuildingsInOrganization  {
-    organization: SimpleObject;
-    buildings: SimpleObject[];
+export interface BuildingsInOrganization<T>  {
+    organization: SimpleObject ;
+    buildings: T[];
 }
-export interface BuildingsInOrganizationSet  {
-    items: BuildingsInOrganization[];
-    usageType: string|null;
+export interface BuildingsInOrganizationSet<E>  {
+    items: BuildingsInOrganization<E>[];
+    usageTypeId?: string;
+    usageTypeName?: string;
 }
 
 
-export interface BuildingsGroupByOrganizations  {
-    [key: string]: BuildingsInOrganization;
+export interface BuildingsGroupByOrganizations<K>  {
+    [key: string]: BuildingsInOrganization<K>;
 }
 
 export interface BuildingDetail {
-    buildingId: number;
-    buildingName: string;
+    id: number;
+    name: string;
     organizationId: number;
     organizationName: string;
     yearOfConstruction: number;
@@ -47,6 +49,28 @@ export interface BuildingDetail {
     site: string;
     eregistryUrl: string;
     worktime: string;
-    usageType?: string;
+    usageTypeId?: string;
+    usageTypeName?: string;
 }
+
+export interface BuildingsSupportElement {
+    usageTypeId?: string;
+    usageTypeName?: string;
+    buildinsArr: BuildingPoint[];
+    buildinsObj: {
+        [key: string]: BuildingPoint;
+    };
+    featuresArr: any[];
+    featuresObj: {
+        [key: string]: any;
+    };
+    layerInfo: any;
+    layerUsage: boolean;
+}
+
+export interface BuildingsSupportData {
+    [key: string]: BuildingsSupportElement;
+}
+
+
 
