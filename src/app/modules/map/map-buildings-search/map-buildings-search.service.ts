@@ -22,6 +22,8 @@ export class MapBuildingsSearchService {
     public filtredBildingsSubj$ = new ReplaySubject<BuildingsInOrganization<BuildingPoint>[]>(1);
     public filtredBildings$: Observable<BuildingsInOrganization<BuildingPoint>[]> = this.filtredBildingsSubj$.asObservable();
 
+    private geoObjectsFilter: any = null;
+
     private subscriptions: Subscription[] = [];
 
     constructor(
@@ -63,8 +65,8 @@ export class MapBuildingsSearchService {
     }
 
     // фильтрация зданий по принадлежности геообъектам
-    private filterBuildinsToArray(filterObj): BuildingPoint[] {
-
+    private filterBuildinsToArray(): BuildingPoint[] {
+        const filterObj = this.geoObjectsFilter;
         const resultBuildings: BuildingPoint[] = [];
         const source = this.buildingsSupportData;
 
@@ -119,13 +121,25 @@ export class MapBuildingsSearchService {
 
     // поиск среди зданий
     startSearch(geoObject: GeoTree): void {
+        if (geoObject) {
+            this.geoObjectsFilter = this.getGeoObjectFilter(geoObject);
 
-        const geoObjectsFilter = this.getGeoObjectFilter(geoObject);
+            const resultBuildings = this.filterBuildinsToArray();
 
-        const resultBuildings = this.filterBuildinsToArray(geoObjectsFilter);
+            this.filtredBildingsSubj$.next(this.buildinsArrayToGroups(resultBuildings));
+        } else {
+            this.geoObjectsFilter = null;
+        }
 
-        this.filtredBildingsSubj$.next(this.buildinsArrayToGroups(resultBuildings));
+    }
 
+    // обновить результаты поиска
+    updateSearch(): void {
+        if (this.geoObjectsFilter) {
+            const resultBuildings = this.filterBuildinsToArray();
+
+            this.filtredBildingsSubj$.next(this.buildinsArrayToGroups(resultBuildings));
+        }
     }
 
     // tslint:disable-next-line: use-lifecycle-interface

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ChangeDetectionStrategy, ChangeDet
 import { MapBuildingsService } from '../../../core/services/data/buildings/map-buildings.service';
 import { Subscription } from 'rxjs';
 import { ICONS } from '../data/mock-icons';
-
+import { MapBuildingsSearchService } from '../map-buildings-search/map-buildings-search.service';
 import {
     BuildingsSupportData,
     BuildingsSupportElement
@@ -29,6 +29,7 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
     constructor(
         private mapBuildingsService: MapBuildingsService,
         private changeDetectorRef: ChangeDetectorRef,
+        private mapBuildingsSearchService: MapBuildingsSearchService
     ) { }
 
     ngOnInit(): void {
@@ -65,6 +66,8 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
         } else {
             this.layersGroup.getLayers().remove(layer.layerInfo);
         }
+
+        this.mapBuildingsSearchService.updateSearch();
         evt.preventDefault();
     }
 

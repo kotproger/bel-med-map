@@ -47,5 +47,9 @@
             </div>
             
         </ng-container>
+
+        <div class="record-container p-16 pt-8" *ngIf="organizations && !organizations.length">
+            Информации не найдено
+        </div>
     </mat-card-content>
 </mat-card>

@@ -184,6 +184,7 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
         } else if (!geoObject) {
             this.searchBuildingsEvent.emit(null);
             this.listOfOrganizations = [];
+            this.mapBuildingsSearchService.startSearch(null);
         }
 
         this.lastGeoObject = geoObject;
