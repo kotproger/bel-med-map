@@ -115,8 +115,8 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
                 this.selectedOrganization.enable({ emitEvent: false });
             } else {
                 this.listOfCities = [];
-                this.selectedCiti.disable();
-                this.selectedOrganization.disable();
+                this.selectedCiti.disable({ emitEvent: false });
+                this.selectedOrganization.disable({ emitEvent: false });
             }
 
             this.onChengeFilters();
@@ -183,7 +183,7 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
             // this.selectedOrganization.setValue('', { emitEvent: false });
             this.mapBuildingsSearchService.startSearch(geoObject);
         } else if (!geoObject) {
-            // this.searchBuildingsEvent.emit(null);
+            this.searchBuildingsEvent.emit(null);
             this.listOfOrganizations = [];
             this.mapBuildingsSearchService.startSearch(null);
         }
@@ -204,5 +204,4 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
-
 }

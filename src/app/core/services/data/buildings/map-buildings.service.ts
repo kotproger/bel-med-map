@@ -28,6 +28,9 @@ export class MapBuildingsService {
     public buildingsSupportDataSubj$ = new ReplaySubject<BuildingsSupportData>(1);
     public buildingsSupportData$: Observable<BuildingsSupportData> = this.buildingsSupportDataSubj$.asObservable();
 
+    private buildingStyleFilter: any = null;
+    private buildingsSupportData: BuildingsSupportData = null;
+
     constructor(
         private buildingsService: BuildingsService
     ) {
@@ -113,41 +116,50 @@ export class MapBuildingsService {
             const vectorLayer = new VectorLayer({
                     source: clusterSource,
                     style: feature => {
-                        const size = feature.get('features').length;
+                        const features = feature.get('features');
+                        const size = features.length;
 
+                        const opacity = this.buildingStyleFilter
+                            ? this.buildingStyleFilter(feature)
+                                ? 1
+                                : 0.2
+                            : 1;
+
+                        const imgName = property + '_' + opacity;
                         // получить или создать стиль иконки
-                        if (!styleCache[property]) {
-                            styleCache[property] = new Style({
+                        if (!styleCache[imgName]) {
+                            styleCache[imgName] = new Style({
                                 image: new Icon({
                                     src: ICONS[property],
                                     anchor: [0.5, 0],
-                                    anchorOrigin: 'bottom-left'
+                                    anchorOrigin: 'bottom-left',
+                                    opacity: opacity
                                 })
                             });
                         }
-                        const imgStyle = styleCache[property];
+                        const imgStyle = styleCache[imgName];
 
                         // если в кластере более 1 элемента - добавить стиль подписи
                         if (size > 1) {
 
-                            const styleName = 'text' + size;
+                            const textName = 'text' + size + opacity;
 
-                            if (!styleCache[styleName]) {
-                                styleCache[styleName] = new Style({
+                            if (!styleCache[textName]) {
+                                styleCache[textName] = new Style({
                                     text: new Text({
                                         text: size + '',
                                         scale: 1.1,
                                         offsetY: -7,
                                         stroke: new Stroke({
-                                            color: '#fafafa',
+                                            color: 'rgba(249, 246, 224, ' + opacity + ')',
                                             width: 3
                                         }),
-                                        padding: [0, -2, -2, 0]
+                                        padding: [0, -2, -2, 0],
+                                        color: 'rgba(0, 0, 0, ' + opacity + ')'
                                     })
                                 });
                             }
-
-                            return [imgStyle, styleCache[styleName]];
+                            return [imgStyle, styleCache[textName]];
 
                         } else {
                             return imgStyle;
@@ -168,6 +180,18 @@ export class MapBuildingsService {
 
     public setVectorLayers(vectorLayers: BuildingsSupportData): void{
         this.buildingsSupportDataSubj$.next(vectorLayers);
+        this.buildingsSupportData = vectorLayers;
+    }
+
+    // установка фильтра обновления стиля маркеров
+    setBuildingStyleFilter(filter): void {
+        this.buildingStyleFilter = filter;
+        if (!filter){
+            for (const property of Object.keys(this.buildingsSupportData)){
+                const vl = this.buildingsSupportData[property];
+                vl.layerInfo.changed({force:true});
+            }
+        }
     }
 
     // tslint:disable-next-line: use-lifecycle-interface

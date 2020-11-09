@@ -12,10 +12,11 @@ import {
     BuildingsSupportElement
 } from '../../core/services/data/buildings/buildings.models';
 
+import { FiilterById } from '../../core/filters/marker-filter';
+
 import Map from 'ol/Map';
 import View from 'ol/View';
 import XYZ from 'ol/source/XYZ';
-import VectorLayer from 'ol/layer/Vector';
 import TileLayer from 'ol/layer/Tile';
 import LayerGroup from 'ol/layer/Group';
 import { createXYZ } from 'ol/tilegrid';
@@ -257,15 +258,21 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         };
     }
 
+    // при получении результатов поиска
     onSearchBuildings(evt: BuildingsInOrganization<BuildingPoint>[] ): void {
         this.searchedItems = evt;
 
+        // границы области
         let bouns = [];
+
+        const filtredBuildings = {};
 
         if (this.searchedItems && this.searchedItems.length) {
             this.searchedItems.forEach(organization => {
 
                 organization.buildings.forEach(building => {
+                    // формируем фильтр
+                    filtredBuildings[building.id] = true;
                     // формируем bouns
                     bouns = bouns.length
                     ? [
@@ -292,13 +299,35 @@ export class MapComponent implements AfterViewInit, OnDestroy {
             });
 
             if (bouns.length){
+                this.mapBuildingsService.setBuildingStyleFilter(FiilterById(filtredBuildings));
+
+                // вычисляем отступы для результатов
+                const dLon = bouns[2] - bouns[0];
+                const dLat = bouns[3] - bouns[1];
+                let delta = dLat > dLon
+                    ? dLat
+                    : dLon;
+                delta = delta * 0.3;
+
+                // устанавливаем отступы
+                bouns = [
+                    bouns[0] - delta,
+                    bouns[1] - delta,
+                    bouns[2] + delta,
+                    bouns[3] + delta
+                ];
+
                 bouns = [
                     ...olProj.fromLonLat([bouns[0], bouns[1]]),
                     ...olProj.fromLonLat([bouns[2], bouns[3]])
                 ];
                 this.map.getView().fit(bouns, { duration: 1000 });
+            } else {
+                this.mapBuildingsService.setBuildingStyleFilter(null);
             }
 
+        } else {
+            this.mapBuildingsService.setBuildingStyleFilter(null);
         }
 
     }
