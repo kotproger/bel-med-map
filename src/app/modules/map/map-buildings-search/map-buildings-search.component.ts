@@ -100,42 +100,43 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
                 map(name => name ? this.filterOrganization(name, this.listOfOrganizations) : this.listOfOrganizations.slice())
             );
 
-            // при изменении значения поля ввода районов
-            this.subscriptions.push(this.selectedState.valueChanges.subscribe(state => {
-
-                this.selectedCiti.setValue('');
-                this.selectedOrganization.setValue('');
-
-                if (this.selectedState.valid) {
-                    this.listOfCities = state.childs;
-                    this.selectedCiti.enable();
-                    this.selectedOrganization.enable();
-                } else {
-                    this.listOfCities = [];
-                    this.selectedCiti.disable();
-                    this.selectedOrganization.disable();
-                }
-
-                this.onChengeFilters();
-            }));
-
-            // при изменении значения поля ввода городов
-            this.subscriptions.push(this.selectedCiti.valueChanges.subscribe(() => {
-                this.onChengeFilters();
-            }));
-            // при изменении значения поля ввода органзаций
-            this.subscriptions.push(this.selectedOrganization.valueChanges.subscribe(organization => {
-                this.showResult();
-            }));
-
             this.changeDetectorRef.detectChanges();
+        }));
+
+        // при изменении значения поля ввода районов
+        this.subscriptions.push(this.selectedState.valueChanges.subscribe(state => {
+
+            this.selectedCiti.setValue('', { emitEvent: false });
+            // this.selectedOrganization.setValue('', { emitEvent: false });
+
+            if (this.selectedState.valid) {
+                this.listOfCities = state.childs;
+                this.selectedCiti.enable();
+                this.selectedOrganization.enable({ emitEvent: false });
+            } else {
+                this.listOfCities = [];
+                this.selectedCiti.disable();
+                this.selectedOrganization.disable();
+            }
+
+            this.onChengeFilters();
+        }));
+
+        // при изменении значения поля ввода городов
+        this.subscriptions.push(this.selectedCiti.valueChanges.subscribe(() => {
+            this.selectedOrganization.setValue('', { emitEvent: false });
+            this.onChengeFilters();
+        }));
+        // при изменении значения поля ввода органзаций
+        this.subscriptions.push(this.selectedOrganization.valueChanges.subscribe(organization => {
+            this.showResult();
         }));
 
         // получение результатов фильтрации по геообъекту
         this.subscriptions.push(this.mapBuildingsSearchService.filtredBildingsSubj$.subscribe( filtredBuildsByOrg => {
             this.listOfOrganizations = filtredBuildsByOrg;
             this.selectedOrganization.updateValueAndValidity();
-            this.searchBuildingsEvent.emit(filtredBuildsByOrg);
+            // this.searchBuildingsEvent.emit(filtredBuildsByOrg);
         }));
     }
 
@@ -179,10 +180,10 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
         // запуск фильтрации по геообъектам
         if (geoObject && geoObject !== this.lastGeoObject) {
             this.listOfOrganizations = [];
-            this.selectedOrganization.setValue('');
+            // this.selectedOrganization.setValue('', { emitEvent: false });
             this.mapBuildingsSearchService.startSearch(geoObject);
         } else if (!geoObject) {
-            this.searchBuildingsEvent.emit(null);
+            // this.searchBuildingsEvent.emit(null);
             this.listOfOrganizations = [];
             this.mapBuildingsSearchService.startSearch(null);
         }

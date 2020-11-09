@@ -63,7 +63,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     };
 
     clickedItems: BuildingsInOrganizationSet<SimpleObject> = null;
-    searchedItems: BuildingsInOrganizationSet<BuildingPoint> = null;
+    searchedItems: BuildingsInOrganization<BuildingPoint>[] = null;
 
     hoveredItems: BuildingsInOrganization<SimpleObject>[] = null;
     hoveredItemsPosition: any = null;
@@ -257,8 +257,50 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         };
     }
 
-    onSearchBuildings(evt: BuildingsInOrganizationSet<BuildingPoint> ): void {
+    onSearchBuildings(evt: BuildingsInOrganization<BuildingPoint>[] ): void {
         this.searchedItems = evt;
+
+        let bouns = [];
+
+        if (this.searchedItems && this.searchedItems.length) {
+            this.searchedItems.forEach(organization => {
+
+                organization.buildings.forEach(building => {
+                    // формируем bouns
+                    bouns = bouns.length
+                    ? [
+                        bouns[0] >  building.lon
+                            ? building.lon
+                            : bouns[0],
+                        bouns[1] >  building.lat
+                            ? building.lat
+                            : bouns[1],
+                        bouns[2] <  building.lon
+                            ? building.lon
+                            : bouns[2],
+                        bouns[3] <  building.lat
+                            ? building.lat
+                            : bouns[3]
+                    ]
+                    : [
+                        building.lon,
+                        building.lat,
+                        building.lon,
+                        building.lat
+                    ];
+                });
+            });
+
+            if (bouns.length){
+                bouns = [
+                    ...olProj.fromLonLat([bouns[0], bouns[1]]),
+                    ...olProj.fromLonLat([bouns[2], bouns[3]])
+                ];
+                this.map.getView().fit(bouns, { duration: 1000 });
+            }
+
+        }
+
     }
 
     ngOnDestroy(): void {

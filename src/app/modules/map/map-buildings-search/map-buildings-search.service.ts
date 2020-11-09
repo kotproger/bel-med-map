@@ -73,7 +73,7 @@ export class MapBuildingsSearchService {
         for (const property of Object.keys(source)){
             if (source[property].layerUsage) {
                 const searchArr = source[property].buildinsArr;
-                source[property].buildinsArr.map((value) => {
+                searchArr.forEach((value) => {
                     if (filterObj[value.geoId]) {
                         resultBuildings.push(value);
                     }
@@ -93,7 +93,9 @@ export class MapBuildingsSearchService {
                     name: current.name,
                     id: current.id,
                     usageTypeId: current.usageTypeId,
-                    usageTypeName: current.usageTypeName
+                    usageTypeName: current.usageTypeName,
+                    lon: current.lon,
+                    lat: current.lat
                 });
 
             } else {
@@ -106,7 +108,9 @@ export class MapBuildingsSearchService {
                         name: current.name,
                         id: current.id,
                         usageTypeId: current.usageTypeId,
-                        usageTypeName: current.usageTypeName
+                        usageTypeName: current.usageTypeName,
+                        lon: current.lon,
+                        lat: current.lat
                     }]
                 };
 
