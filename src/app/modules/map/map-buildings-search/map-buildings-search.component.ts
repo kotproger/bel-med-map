@@ -9,7 +9,6 @@ import { MapBuildingsService } from '../../../core/services/data/buildings/map-b
 
 import { GeoTree } from '../../../core/services/data/geo/geo.models';
 import {
-    BuildingsInOrganizationSet,
     BuildingsInOrganization,
     BuildingPoint
 } from '../../../core/services/data/buildings/buildings.models';
@@ -116,7 +115,7 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
                     this.selectedCiti.disable();
                     this.selectedOrganization.disable();
                 }
-                //this.listOfOrganizations = [];
+
                 this.onChengeFilters();
             }));
 
@@ -126,11 +125,7 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
             }));
             // при изменении значения поля ввода органзаций
             this.subscriptions.push(this.selectedOrganization.valueChanges.subscribe(organization => {
-                this.searchBuildingsEvent.emit(
-                    organization && this.selectedOrganization.valid
-                        ? [organization]
-                        : this.listOfOrganizations
-                );
+                this.showResult();
             }));
 
             this.changeDetectorRef.detectChanges();
@@ -192,6 +187,16 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
         }
 
         this.lastGeoObject = geoObject;
+    }
+
+    // Отобразить результат поиска в зависимости от выбранной организации
+    showResult(): void {
+        const organization = this.selectedOrganization.value;
+        this.searchBuildingsEvent.emit(
+            organization && this.selectedOrganization.valid
+                ? [organization]
+                : [...this.listOfOrganizations]
+        );
     }
 
     ngOnDestroy(): void {

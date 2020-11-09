@@ -76,7 +76,11 @@
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-button [disabled]="!listOfOrganizations || listOfOrganizations.length === 0">Отобразить результат</button>
+        <button mat-button 
+            [disabled]="!listOfOrganizations || listOfOrganizations.length === 0"
+            (click)="showResult()"
+        >
+        Отобразить результат</button>
     </mat-card-actions>
 
 </mat-card>
