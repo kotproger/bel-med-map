@@ -12,20 +12,9 @@
     <app-map-buildings-search
         (searchBuildingsEvent)="onSearchBuildings($event)"
     ></app-map-buildings-search>
+    
+    <app-map-tooltip [displayData]="toolTipValue"></app-map-tooltip>
 
-    <div class="tooltip" 
-    #tooltip 
-    [ngClass]="{'no-display': !hoveredItems}"
->
-    <mat-card>
-        <mat-card-header>
-            <ng-container *ngFor="let item of hoveredItems ">
-                <mat-card-title>{{item.organization.name}}</mat-card-title>
-                <mat-card-subtitle *ngFor="let build of item.buildings"> • {{build.name}}</mat-card-subtitle>
-            </ng-container>
-        </mat-card-header>
-    </mat-card>
-</div>
     <div class="med_map" #med_map>
         <a href="http://belzdrav.ru/" 
             target="_blank" 

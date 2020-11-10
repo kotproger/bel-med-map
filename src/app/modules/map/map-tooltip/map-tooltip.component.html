@@ -1,0 +1,20 @@
+<ng-container *ngIf="position">
+
+    <div class="tooltip" 
+        #tooltip 
+        [style.left]="position[0]+'px'"
+        [style.top]="position[1]+'px'"
+    >
+        <mat-card>
+            <mat-card-header>
+                <ng-container *ngFor="let item of displayValues ">
+                    <mat-card-title>{{item.organization.name}}</mat-card-title>
+                    <mat-card-subtitle *ngFor="let build of item.buildings"> • {{build.name}}</mat-card-subtitle>
+                </ng-container>
+            </mat-card-header>
+        </mat-card>
+        <div class="arrow"></div>
+    </div>
+    
+ 
+</ng-container>

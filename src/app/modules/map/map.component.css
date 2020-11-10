@@ -6,25 +6,7 @@
     position: relative;
 }
 
-mat-card{
-    padding: 3px !important;
-    max-height: 250px;
-    overflow-y: auto;
-    width: 200px;
-    outline: none;
-}
 
-mat-card-subtitle{
-    margin: 0 !important; 
-    padding-left: 5px;
-}
-mat-card-title{
-    margin: 0 !important; 
-    font-size: small !important; 
-}
-mat-card-header{
-    flex-direction: column !important;
-}
 .m-button{
     position: absolute;
     z-index: 1;
@@ -54,9 +36,5 @@ mat-card-header{
 }
 .gerb>img{
     width: 64px;
-}
-.tooltip{
-    position: fixed;
-    z-index: 2;
 }
 

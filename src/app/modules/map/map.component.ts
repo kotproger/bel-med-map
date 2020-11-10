@@ -12,6 +12,10 @@ import {
     BuildingsSupportElement
 } from '../../core/services/data/buildings/buildings.models';
 
+import {
+    MapToolTip
+} from '../../core/services/data/_other/models';
+
 import { FiilterById } from '../../core/filters/marker-filter';
 
 import Map from 'ol/Map';
@@ -48,7 +52,6 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     ) { }
 
     @ViewChild('med_map') medMapDiv: ElementRef;
-    @ViewChild('tooltip') tooltipDiv: ElementRef;
 
     private subscription: Subscription;
 
@@ -66,8 +69,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     clickedItems: BuildingsInOrganizationSet<SimpleObject> = null;
     searchedItems: BuildingsInOrganization<BuildingPoint>[] = null;
 
-    hoveredItems: BuildingsInOrganization<SimpleObject>[] = null;
-    hoveredItemsPosition: any = null;
+    toolTipValue: MapToolTip;
 
     ngAfterViewInit(): void {
 
@@ -128,16 +130,14 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
         this.map.on('click', evt => {
             const pixel = this.map.getEventPixel(evt.originalEvent);
-            const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(pixel);
-            // console.log(rezult);
+            const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
+            const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(feature);
+
             this.clickedItems = {
                 items: rezult.features,
                 usageType: rezult.usageType
             };
             this.changeDetectorRef.detectChanges();
-
-            // this.map.removeLayer(this.layersGroup.getLayersArray()[0]);
-            // this.layersGroup.getLayers().remove(this.layersGroup.getLayersArray()[0])
         });
 
         // наведение курсора на элемнет.изменение указателя мышки и показ всплывающей подсказки
@@ -151,19 +151,19 @@ export class MapComponent implements AfterViewInit, OnDestroy {
                 ? 'pointer'
                 : '';
 
-            const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(pixel, lastFeature);
-            this.hoveredItems = rezult.features;
+            const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
+            const rezult: GetMapFeaturesAtPixel = this.getMapFeaturesAtPixel(feature, lastFeature);
+
             if (rezult.features){
-                // показ всплывающей подсказки
-                const styleTip = this.tooltipDiv.nativeElement.style;
-                styleTip.top = pixel[1] + 'px';
-                styleTip.left = pixel[0] + 'px';
+
+                this.toolTipValue = {
+                    data: rezult.features,
+                    position: this.map.getPixelFromCoordinate(feature.getGeometry().getCoordinates())
+                };
                 this.changeDetectorRef.detectChanges();
-                setTimeout(() => {
-                    this.tooltipDiv.nativeElement.children[0].tabIndex = 1;
-                    this.tooltipDiv.nativeElement.children[0].focus();
-                });
+
             } else if (lastFeature && !rezult.lastFeature){
+                this.toolTipValue = null;
                 this.changeDetectorRef.detectChanges();
             }
             lastFeature  = rezult.lastFeature;
@@ -204,9 +204,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     }
 
     // получить объекты под указателем курсора по координатам
-    getMapFeaturesAtPixel(pixel: number[], lastFeature?: any): GetMapFeaturesAtPixel {
+    getMapFeaturesAtPixel(feature: any, lastFeature?: any): GetMapFeaturesAtPixel {
         // получение списка зданий, привязанных к маркеру
-        const feature = this.map.forEachFeatureAtPixel(pixel, f => f);
+
         if (feature && (!lastFeature || lastFeature.ol_uid !== feature.ol_uid)) {
             lastFeature = feature;
             const resultFeatures = feature.get('features');

@@ -9,6 +9,7 @@ import { MapLayersListComponent } from './map-layers-list/map-layers-list.compon
 import { MapBuildingsSearchComponent } from './map-buildings-search/map-buildings-search.component';
 import { PopupDetailComponent } from './map-popup/popup-detail/popup-detail.component';
 import { PopupListComponent } from './map-popup/popup-list/popup-list.component';
+import { MapTooltipComponent } from './map-tooltip/map-tooltip.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { PopupListComponent } from './map-popup/popup-list/popup-list.component'
         MapLayersListComponent,
         MapBuildingsSearchComponent,
         PopupDetailComponent,
-        PopupListComponent
+        PopupListComponent,
+        MapTooltipComponent
     ],
     imports: [
         CommonModule,

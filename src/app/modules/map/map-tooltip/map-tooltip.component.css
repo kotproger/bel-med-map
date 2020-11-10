@@ -1,0 +1,39 @@
+.tooltip{
+    position: fixed;
+    z-index: 2;
+}
+mat-card{
+    padding: 3px !important;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 200px;
+    outline: none;
+}
+
+mat-card-subtitle{
+    margin: 0 !important; 
+    padding-left: 5px;
+}
+mat-card-title{
+    margin: 0 !important; 
+    font-size: small !important; 
+}
+mat-card-header{
+    flex-direction: column !important;
+}
+.arrow{
+    left: -8px;
+    top: 4px;
+    width: 8px;
+    height: 16px;
+    position: absolute;
+}
+.arrow::before {
+    position: absolute;
+    content: "";
+    border-color: transparent;
+    border-style: solid;
+    right: 0;
+    border-width: 8px 8px 8px 0;
+    border-right-color: #000;
+}
