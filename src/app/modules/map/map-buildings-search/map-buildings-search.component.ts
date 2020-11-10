@@ -135,6 +135,19 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
         // получение результатов фильтрации по геообъекту
         this.subscriptions.push(this.mapBuildingsSearchService.filtredBildingsSubj$.subscribe( filtredBuildsByOrg => {
             this.listOfOrganizations = filtredBuildsByOrg;
+
+            // обновление организации при обновлении данных
+            const val = this.selectedOrganization.value;
+            if (val && this.selectedOrganization.valid){
+                const newValue = filtredBuildsByOrg.filter (el => {
+                    return val.organization.id === el.organization.id;
+                });
+                this.selectedOrganization.setValue(newValue && newValue.length
+                    ? newValue[0]
+                    : '',
+                    { emitEvent: false }
+                );
+            }
             this.selectedOrganization.updateValueAndValidity();
             // this.searchBuildingsEvent.emit(filtredBuildsByOrg);
         }));

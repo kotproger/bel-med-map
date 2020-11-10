@@ -133,6 +133,7 @@ export class MapBuildingsService {
                                     src: ICONS[property],
                                     anchor: [0.5, 0],
                                     anchorOrigin: 'bottom-left',
+                                    // tslint:disable-next-line: object-literal-shorthand
                                     opacity: opacity
                                 })
                             });
@@ -189,7 +190,7 @@ export class MapBuildingsService {
         if (!filter){
             for (const property of Object.keys(this.buildingsSupportData)){
                 const vl = this.buildingsSupportData[property];
-                vl.layerInfo.changed({force:true});
+                vl.layerInfo.changed({force: true});
             }
         }
     }
