@@ -1,12 +1,12 @@
 <mat-card>
-    <mat-card-header class="popup-fix">
+    <mat-card-header class="">
         <mat-card-title>{{title}}</mat-card-title>
     
-            <mat-card-subtitle >{{usageType ? usageType.name : ' '}}</mat-card-subtitle>
+            <mat-card-subtitle **ngIf="usageType">{{usageType }}</mat-card-subtitle>
             <div class="mat-card-avatar" *ngIf="usageType">
                 <img [src]="icons[usageType.id]" alt="">
             </div>
-
+            
     </mat-card-header>
 
     <mat-divider></mat-divider>

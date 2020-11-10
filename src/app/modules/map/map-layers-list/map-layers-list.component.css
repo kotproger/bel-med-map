@@ -1,10 +1,13 @@
-:host(app-map-layers-list){
+.app-map-layers-list{
     position: absolute;
     z-index: 1;
     bottom: 10px;
     right: 10px;
     width: 350px;
     padding: 0 !important;
+    height: calc(100% - 340px) !important;
+    max-height: 400px !important;
+    min-height: 200px;
 }
 img {
     height: 24px;
@@ -17,7 +20,18 @@ img {
 }
 mat-card-content{
     padding-top: 8px;
+    overflow-y: auto;
+    height: calc(100% - 41px);
 }
 mat-card {
     padding: 16px 0 0 0 !important;
+    overflow-y: none;
+    height: calc(100% - 16px) !important;
+}
+.cl-form-button{
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    right: 175px;
+    border-radius: 19px;
 }

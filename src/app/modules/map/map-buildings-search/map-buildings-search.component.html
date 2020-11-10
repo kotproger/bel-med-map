@@ -1,86 +1,108 @@
 
-
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>Поиск зданий</mat-card-title>
-    </mat-card-header>
-
-    <mat-divider></mat-divider>
-
-    <mat-card-content>   
-
-        <mat-form-field  >
-            <mat-label>Район / округ</mat-label>
-            <input 
-                matInput 
-                placeholder="Введите районы"  
-                type="text" 
-                [formControl]="selectedState" 
-                [matAutocomplete]="autoState"
-            >
-            <mat-autocomplete #autoState="matAutocomplete" [displayWith]="displayGeoFn">
-                <mat-option *ngFor="let state of filteredStatesList | async" [value]="state">
-                  {{state.name}} {{state.typeFullName ? state.typeFullName.toLowerCase() : ""}} 
-                </mat-option>
-            </mat-autocomplete>
+<div class="app-map-buildings-search" *ngIf="isShow">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Поиск зданий</mat-card-title>
+            <button mat-icon-button class="close-form-button"
+                    aria-label="Close" 
+                    matTooltip="Скрыть форму"
+                    (click)="closeForm()"
+                >
+                <mat-icon  >close</mat-icon>
+            </button>
             
-            <button mat-icon-button matSuffix (click)="selectedState.setValue('')" 
-                *ngIf="selectedState.value != ''">
-                <mat-icon>clear</mat-icon>
-            </button>
-        </mat-form-field>
+        </mat-card-header>
 
-        <mat-form-field  >
-            <mat-label>Город / поселение</mat-label>
-            <input 
-                matInput 
-                placeholder="Введите районы" 
-                type="text" 
-                [formControl]="selectedCiti" 
-                [matAutocomplete]="autoCiti"
+        <mat-divider></mat-divider>
+
+        <mat-card-content>   
+
+            <mat-form-field  >
+                <mat-label>Район / округ</mat-label>
+                <input 
+                    matInput 
+                    placeholder="Введите районы"  
+                    type="text" 
+                    [formControl]="selectedState" 
+                    [matAutocomplete]="autoState"
+                >
+                <mat-autocomplete #autoState="matAutocomplete" [displayWith]="displayGeoFn">
+                    <mat-option *ngFor="let state of filteredStatesList | async" [value]="state">
+                    {{state.name}} {{state.typeFullName ? state.typeFullName.toLowerCase() : ""}} 
+                    </mat-option>
+                </mat-autocomplete>
+                
+                <button mat-icon-button matSuffix (click)="selectedState.setValue('')" 
+                    *ngIf="selectedState.value != ''">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field  >
+                <mat-label>Город / поселение</mat-label>
+                <input 
+                    matInput 
+                    placeholder="Введите районы" 
+                    type="text" 
+                    [formControl]="selectedCiti" 
+                    [matAutocomplete]="autoCiti"
+                >
+                <mat-autocomplete #autoCiti="matAutocomplete" [displayWith]="displayGeoFn">
+                    <mat-option *ngFor="let citi of filteredCitisList | async" [value]="citi">
+                    {{citi.name}} {{citi.typeFullName ? citi.typeFullName.toLowerCase() : ""}} 
+                    </mat-option>
+                </mat-autocomplete>
+
+                <button mat-icon-button matSuffix (click)="selectedCiti.setValue('')" 
+                    *ngIf="selectedCiti.value != ''">
+                    <mat-icon>clear</mat-icon>
+                </button>
+
+            </mat-form-field>
+
+            <mat-form-field  >
+                <mat-label>Организация</mat-label>
+                <input 
+                    matInput 
+                    placeholder="Введите организацию" 
+                    type="text" 
+                    [formControl]="selectedOrganization" 
+                    [matAutocomplete]="autoOrg"
+                >
+                <mat-autocomplete #autoOrg="matAutocomplete" [displayWith]="displayOrgFn">
+                    <mat-option *ngFor="let org of filteredOrganizationsList| async" [value]="org">
+                    {{org.organization.name}} 
+                    </mat-option>
+                </mat-autocomplete>
+
+                <button mat-icon-button matSuffix (click)="selectedOrganization.setValue('')" 
+                    *ngIf="selectedOrganization.value != ''">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </mat-form-field>
+                
+        </mat-card-content>
+
+        <mat-card-actions>
+            <button mat-button 
+                [disabled]="!listOfOrganizations || listOfOrganizations.length === 0"
+                (click)="showResult()"
             >
-            <mat-autocomplete #autoCiti="matAutocomplete" [displayWith]="displayGeoFn">
-                <mat-option *ngFor="let citi of filteredCitisList | async" [value]="citi">
-                  {{citi.name}} {{citi.typeFullName ? citi.typeFullName.toLowerCase() : ""}} 
-                </mat-option>
-            </mat-autocomplete>
+            Отобразить результат</button>
+        </mat-card-actions>
 
-            <button mat-icon-button matSuffix (click)="selectedCiti.setValue('')" 
-                *ngIf="selectedCiti.value != ''">
-                <mat-icon>clear</mat-icon>
-            </button>
+    </mat-card>
+</div>
 
-        </mat-form-field>
 
-        <mat-form-field  >
-            <mat-label>Организация</mat-label>
-            <input 
-                matInput 
-                placeholder="Введите организацию" 
-                type="text" 
-                [formControl]="selectedOrganization" 
-                [matAutocomplete]="autoOrg"
-            >
-            <mat-autocomplete #autoOrg="matAutocomplete" [displayWith]="displayOrgFn">
-                <mat-option *ngFor="let org of filteredOrganizationsList| async" [value]="org">
-                  {{org.organization.name}} 
-                </mat-option>
-            </mat-autocomplete>
+<button mat-raised-button
+    class="cs-form-button" 
+    aria-label="Open" 
+    (click)="isShow = !isShow"
+    matTooltip="Поиск зданий"
 
-            <button mat-icon-button matSuffix (click)="selectedOrganization.setValue('')" 
-                *ngIf="selectedOrganization.value != ''">
-                <mat-icon>clear</mat-icon>
-            </button>
-        </mat-form-field>
-            
-    </mat-card-content>
-
-    <mat-card-actions>
-        <button mat-button 
-            [disabled]="!listOfOrganizations || listOfOrganizations.length === 0"
-            (click)="showResult()"
-        >
-        Отобразить результат</button>
-    </mat-card-actions>
-
-</mat-card>
+    color="accent"
+>
+    Поиск зданий 
+    <mat-icon>search</mat-icon>
+</button>

@@ -60,10 +60,10 @@ mat-card{
 .mat-card-subtitle{
     margin-bottom: 0 !important;
 }
-::ng-deep .popup-fix>.mat-card-header-text {
+/* ::ng-deep .popup-fix>.mat-card-header-text {
     width: 290px;
     margin: 0 8px !important;
-}
+} */
 
 .mat-card-content{
     max-height: 456px;

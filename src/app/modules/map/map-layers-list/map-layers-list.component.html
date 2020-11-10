@@ -1,29 +1,50 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>Типы использования</mat-card-title>
-    </mat-card-header>
+<div class="app-map-layers-list" *ngIf="isShow">
+    <mat-card >
+        <mat-card-header>
+            <mat-card-title>Типы использования</mat-card-title>
+            <button mat-icon-button class="close-form-button"
+                    aria-label="Close" 
+                    matTooltip="Скрыть форму"
+                    (click)="closeForm()"
+                >
+                <mat-icon  >close</mat-icon>
+            </button>
+        </mat-card-header>
 
-    <mat-divider></mat-divider>
 
-    <mat-card-content>   
-        <div class="record-container active p-16" 
-            *ngFor="let item of layersList"
-            (click)="onSelectLayer(item)"
-        >   
-            <img [src]="icons[item.usageTypeId]" alt="">  
-            <div class="text-container main"> 
-                <div class="no-wrap-text">
-                    {{item.usageTypeName}}
+
+        <mat-card-content>   
+            <div class="record-container active p-16" 
+                *ngFor="let item of layersList"
+                (click)="onSelectLayer(item)"
+            >   
+                <img [src]="icons[item.usageTypeId]" alt="">  
+                <div class="text-container main"> 
+                    <div class="no-wrap-text">
+                        {{item.usageTypeName}}
+                    </div>
                 </div>
-            </div>
 
-            <mat-checkbox 
-                class="example-margin" 
-                [(ngModel)]="item.layerUsage"
-                (click)="onLayerCheckChange($event ,item)"
-            ></mat-checkbox>
-                
-        </div>
-    </mat-card-content>
-</mat-card>
+                <mat-checkbox 
+                    class="example-margin" 
+                    [(ngModel)]="item.layerUsage"
+                    (click)="onLayerCheckChange($event ,item)"
+                ></mat-checkbox>
+                    
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<button mat-raised-button
+    class="cl-form-button" 
+    aria-label="Open" 
+    (click)="isShow = !isShow"
+    matTooltip="Типы использования"
+
+    color="accent"
+>
+    Типы использования 
+    <mat-icon>filter</mat-icon>
+</button>
 

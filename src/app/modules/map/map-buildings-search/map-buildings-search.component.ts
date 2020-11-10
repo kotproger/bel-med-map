@@ -55,6 +55,8 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
 
     lastGeoObject: GeoTree;
 
+    isShow = true;
+
     constructor(
         private geoTreeService: GeoTreeService,
         private mapBuildingsService: MapBuildingsService,
@@ -212,6 +214,14 @@ export class MapBuildingsSearchComponent implements OnInit, OnDestroy {
                 ? [organization]
                 : [...this.listOfOrganizations]
         );
+    }
+
+    closeForm(): void {
+        this.isShow = false;
+    }
+
+    openForm(): void {
+        this.isShow = true;
     }
 
     ngOnDestroy(): void {

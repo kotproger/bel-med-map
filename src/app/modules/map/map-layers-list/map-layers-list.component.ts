@@ -26,6 +26,8 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
 
     public icons = ICONS;
 
+    public isShow = true;
+
     constructor(
         private mapBuildingsService: MapBuildingsService,
         private changeDetectorRef: ChangeDetectorRef,
@@ -69,6 +71,14 @@ export class MapLayersListComponent implements OnInit, OnDestroy {
 
         this.mapBuildingsSearchService.updateSearch();
         evt.preventDefault();
+    }
+
+    closeForm(): void {
+        this.isShow = false;
+    }
+
+    openForm(): void {
+        this.isShow = true;
     }
 
     ngOnDestroy(): void {

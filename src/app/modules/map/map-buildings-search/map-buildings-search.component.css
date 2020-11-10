@@ -1,7 +1,7 @@
-:host(app-map-buildings-search){
+.app-map-buildings-search{
     position: absolute;
     z-index: 1;
-    top: 10px;
+    top: 55px;
     right: 10px;
     width: 350px;
     padding: 0 !important;
@@ -19,4 +19,11 @@ mat-card {
 mat-card-actions {
     text-align: center;
     padding: 0 0 8px 0 !important
+}
+.cs-form-button {
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    right: 10px;
+    border-radius: 19px;
 }
