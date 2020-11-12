@@ -29,7 +29,9 @@ import * as olProj from 'ol/proj';
 import { register } from 'ol/proj/proj4';
 import proj4 from 'proj4';
 
-const mapZoom = 8;
+const MapInitZoom = 8;
+const MapMinZoom = 4;
+const MapMaxZoom = 18;
 const initCoords = [36.5763, 50.5919];
 
 interface GetMapFeaturesAtPixel {
@@ -61,9 +63,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     imgUrl = environment.iconUrl;
 
     mapZoomConfig: any = {
-        zoom: mapZoom,
-        maxZoom: 18,
-        minZoom: 4
+        zoom: MapInitZoom,
+        MapMaxZoom: 18,
+        MapMinZoom: 4
     };
 
     clickedItems: BuildingsInOrganizationSet<SimpleObject> = null;
@@ -199,7 +201,7 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     mapInit(): void {
         this.map.getView().animate({
             center: olProj.fromLonLat(initCoords),
-            zoom: mapZoom
+            zoom: MapInitZoom
         });
     }
 
@@ -329,7 +331,17 @@ export class MapComponent implements AfterViewInit, OnDestroy {
         } else {
             this.mapBuildingsService.setBuildingStyleFilter(null);
         }
+    }
 
+    extentToPointMap(evt): void {
+        if (evt.detail) {
+            const coords = olProj.fromLonLat([evt.detail[0], evt.detail[1]]);
+            this.map.getView().animate({
+                center: coords,
+                zoom: MapMaxZoom
+            });
+        }
+        console.log(evt.detail);
     }
 
     ngOnDestroy(): void {

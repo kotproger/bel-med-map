@@ -40,8 +40,24 @@
         </div>
         <div  *ngIf="detailOfBuilding">
 
-            <div class="title-text" >
+            <!-- <div class="title-text" >
+                <mat-icon  class="option-icon">gps_fixed</mat-icon>
                 {{detailOfBuilding.name}}
+            </div> -->
+
+            <div class="record-container active p-16" 
+                matTooltip="Показать на карте"
+                matTooltipPosition="right"
+                (click)="extentToMap($event.target)"
+            >
+            
+                <mat-icon  class="icon">gps_fixed</mat-icon>  
+                <div class="text-container main"> 
+                    <div class="no-wrap-text">
+                        {{detailOfBuilding.name}}
+                    </div>
+                </div>
+            
             </div>
 
             <div  class="options-lest" >
@@ -55,7 +71,7 @@
                             <label>Год постройки</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding.yearOfConstruction}}
+                            {{detailOfBuilding.yearOfConstruction || '-'}}
                         </div>
                     </div>
 
@@ -65,7 +81,7 @@
                             <label>Посещений в смену</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding.planCountVisits}}
+                            {{detailOfBuilding.planCountVisits || '-'}}
                         </div>
                     </div>
                     
@@ -80,7 +96,7 @@
                             <label>Этажей</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding.floors}}
+                            {{detailOfBuilding.floors || '-'}}
                         </div>
                     </div>
 
@@ -90,7 +106,7 @@
                             <label>Общая площадь, кв.м.</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding.totalArea}}
+                            {{detailOfBuilding.totalArea || '-'}}
                         </div>
                     </div>
                     
@@ -102,7 +118,7 @@
                         <label>Адрес</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding.address}}
+                        {{detailOfBuilding.address || '-'}}
                     </div>
                 </div>
 
@@ -112,7 +128,7 @@
                         <label>Время работы</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding.worktime}}
+                        {{detailOfBuilding.worktime || '-'}}
                     </div>
                 </div>
 
@@ -122,7 +138,7 @@
                         <label>Телефон</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding.phone}}
+                        {{detailOfBuilding.phone || '-'}}
                     </div>
                 </div>
 
@@ -132,7 +148,7 @@
                         <label>Электронная почта</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding.email}}
+                        {{detailOfBuilding.email || '-'}}
                     </div>
                 </div>
 

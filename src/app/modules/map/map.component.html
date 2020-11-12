@@ -5,6 +5,7 @@
     <app-map-popup 
         [inGroupOrganizationsSet]="clickedItems"
         [inSearchOganizationsSet]="searchedItems"
+        (extentToPointMapEvent)="extentToPointMap($event)"
     ></app-map-popup>
 
     <app-map-layers-list [map]="map" [layersGroup]="layersGroup"></app-map-layers-list>
@@ -12,7 +13,7 @@
     <app-map-buildings-search
         (searchBuildingsEvent)="onSearchBuildings($event)"
     ></app-map-buildings-search>
-    
+
     <app-map-tooltip [displayData]="toolTipValue"></app-map-tooltip>
 
     <div class="med_map" #med_map>

@@ -48,6 +48,7 @@ export class PopupDetailComponent implements OnInit, OnDestroy {
         }
 
     @Output() returnEvent = new EventEmitter<number>();
+    @Output() extentToMapEvent = new EventEmitter<number[]>();
 
     // public detailOfBuilding$: BehaviorSubject<BuildingDetail> = this.buildingDetailService.buildingSubj$;
     public detailOfBuilding: BuildingDetail = null;
@@ -105,6 +106,14 @@ export class PopupDetailComponent implements OnInit, OnDestroy {
     // событие возврата
     return(): void {
         this.returnEvent.emit(this.fromId);
+    }
+
+    // приблизить к координатам точки
+    extentToMap(target: any): void {
+        target.dispatchEvent(new CustomEvent('extentToPointMapEvent', {
+            bubbles: true,  detail: [this.detailOfBuilding.lon, this.detailOfBuilding.lat]
+        }));
+        // this.extentToMapEvent.emit([this.detailOfBuilding.lon, this.detailOfBuilding.lat]);
     }
 
     ngOnDestroy(): void {
