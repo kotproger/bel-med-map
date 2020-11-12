@@ -1,8 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { BuildingDetailService } from '../../../../core/services/data/buildings/building-detail.service';
+import { AttachedValueService } from '../../../../core/services/data/attached/attached-value.service';
+
+import { BackEndResponse } from '../../../../core/services/http/http.models';
+
 import { ICONS } from '../../data/mock-icons';
 import {
     SimpleObject,
@@ -16,7 +20,7 @@ import {
     styleUrls: ['./popup-detail.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PopupDetailComponent implements OnInit {
+export class PopupDetailComponent implements OnInit, OnDestroy {
 
     @Input() organization: SimpleObject;
     @Input() usageType: SimpleObject;
@@ -26,6 +30,9 @@ export class PopupDetailComponent implements OnInit {
     @Input()
         set building(building: BuildingPoint) {
 
+            this.buildingPhoto = null;
+            this.buildingDetailService.getBuilding(null);
+
             if (building) {
                 this.buildingDetailService.getBuilding(building.id);
                 if (building.usageTypeId) {
@@ -34,26 +41,74 @@ export class PopupDetailComponent implements OnInit {
                         name: building.usageTypeName
                     };
                 }
-            } else {
-                this.buildingDetailService.getBuilding(null);
+
+                // получение фото
             }
+            this.changeDetectorRef.detectChanges();
         }
 
     @Output() returnEvent = new EventEmitter<number>();
 
-    public detailOfBuilding$: BehaviorSubject<BuildingDetail> = this.buildingDetailService.buildingSubj$;
+    // public detailOfBuilding$: BehaviorSubject<BuildingDetail> = this.buildingDetailService.buildingSubj$;
+    public detailOfBuilding: BuildingDetail = null;
 
     public icons = ICONS;
 
+    public buildingPhoto: any = null;
+
+    private subscription: Subscription;
+
     constructor(
-        private buildingDetailService: BuildingDetailService
-    ) { }
+        private buildingDetailService: BuildingDetailService,
+        private attachedValueService: AttachedValueService,
+        private changeDetectorRef: ChangeDetectorRef
+    ) {    }
 
     ngOnInit(): void {
+        this.subscription = this.buildingDetailService.buildingSubj$.subscribe(value => {
+
+            this.detailOfBuilding = value;
+
+            if  (value && value.photos && value.photos.length) {
+                this.attachedValueService.getAttached(value.photos[0].id)
+                    .subscribe((photo: BackEndResponse<any>) => {
+                        const { success, data, message} = photo;
+                        const detail = this.detailOfBuilding;
+                        if (success && detail && detail.photos && detail.photos.length && detail.photos[0].id === data.id) {
+                            this.buildingPhoto = 'data:image/png;base64,' + data.blobValue;
+                            this.changeDetectorRef.detectChanges();
+                        }
+                    });
+            }
+            this.changeDetectorRef.detectChanges();
+            // ;
+        });
     }
 
+    // выполняется ли загрузка фото
+    isLoadingPhoto(): boolean {
+        return this.isHavePhoto()
+            ? this.buildingPhoto
+                ? false
+                : true
+            : false;
+    }
+
+    // есть ли фото у здания
+    isHavePhoto(): boolean {
+        return this.detailOfBuilding
+            ? this.detailOfBuilding.photos && this.detailOfBuilding.photos.length
+                ? true
+                : false
+            : true;
+    }
+    // событие возврата
     return(): void {
         this.returnEvent.emit(this.fromId);
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
 }

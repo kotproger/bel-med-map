@@ -1,5 +1,5 @@
 <mat-card>
-    <mat-card-header class="popup-fix">
+    <mat-card-header class="popup-detail-fix">
         <mat-card-title
             [matTooltip]="organization ? organization.name : ''"
             matTooltipPosition="right"
@@ -9,8 +9,12 @@
         </mat-card-title>
             
             <mat-card-subtitle *ngIf="usageType">{{usageType.name}}</mat-card-subtitle>
-            <div class="mat-card-avatar" *ngIf="usageType">
-                <img [src]="icons[usageType.id]" alt="">
+            <div class="mat-card-avatar" *ngIf="detailOfBuilding">
+
+                <img *ngIf="!isHavePhoto()" [src]="icons[usageType.id]" alt="">
+                <mat-spinner diameter="50" *ngIf="isLoadingPhoto()"></mat-spinner>
+                <div *ngIf="buildingPhoto" class="image-container" [style.background-image]="'url(' + buildingPhoto + ')'"></div>
+
             </div>
 
     </mat-card-header>
@@ -34,12 +38,12 @@
             </div>
             
         </div>
-        <ng-container *ngIf="detailOfBuilding$ | async">
-        
-            <div class="p-16 pt-8" >
-                {{detailOfBuilding$.value.name}}
+        <div  *ngIf="detailOfBuilding">
+
+            <div class="title-text" >
+                {{detailOfBuilding.name}}
             </div>
-            
+
             <div  class="options-lest" >
                 
                 <div style="display: flex;
@@ -51,7 +55,7 @@
                             <label>Год постройки</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding$.value.yearOfConstruction}}
+                            {{detailOfBuilding.yearOfConstruction}}
                         </div>
                     </div>
 
@@ -61,7 +65,7 @@
                             <label>Посещений в смену</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding$.value.planCountVisits}}
+                            {{detailOfBuilding.planCountVisits}}
                         </div>
                     </div>
                     
@@ -76,7 +80,7 @@
                             <label>Этажей</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding$.value.floors}}
+                            {{detailOfBuilding.floors}}
                         </div>
                     </div>
 
@@ -86,7 +90,7 @@
                             <label>Общая площадь, кв.м.</label>   
                         </div>
                         <div class="option-value">
-                            {{detailOfBuilding$.value.totalArea}}
+                            {{detailOfBuilding.totalArea}}
                         </div>
                     </div>
                     
@@ -98,7 +102,7 @@
                         <label>Адрес</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding$.value.address}}
+                        {{detailOfBuilding.address}}
                     </div>
                 </div>
 
@@ -108,7 +112,7 @@
                         <label>Время работы</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding$.value.worktime}}
+                        {{detailOfBuilding.worktime}}
                     </div>
                 </div>
 
@@ -118,7 +122,7 @@
                         <label>Телефон</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding$.value.phone}}
+                        {{detailOfBuilding.phone}}
                     </div>
                 </div>
 
@@ -128,7 +132,7 @@
                         <label>Электронная почта</label>   
                     </div>
                     <div class="option-value">
-                        {{detailOfBuilding$.value.email}}
+                        {{detailOfBuilding.email}}
                     </div>
                 </div>
 
@@ -138,10 +142,10 @@
                         <label>Официальный сайт</label>   
                     </div>
                     <div class="option-value">
-                        <ng-container *ngIf="detailOfBuilding$.value.site">
-                            <a [href]="detailOfBuilding$.value.site" target="_blanck" class="no-wrap-text">{{detailOfBuilding$.value.site}}</a>
+                        <ng-container *ngIf="detailOfBuilding.site">
+                            <a [href]="detailOfBuilding.site" target="_blanck" class="no-wrap-text">{{detailOfBuilding.site}}</a>
                         </ng-container>
-                        <ng-container *ngIf="!detailOfBuilding$.value.site">-</ng-container>
+                        <ng-container *ngIf="!detailOfBuilding.site">-</ng-container>
                     </div>
                 </div>
 
@@ -151,14 +155,14 @@
                         <label>Электронная регистратура</label>   
                     </div>
                     <div class="option-value">
-                        <ng-container *ngIf="detailOfBuilding$.value.eregistryUrl">
-                            <a [href]="detailOfBuilding$.value.eregistryUrl" target="_blanck" class="no-wrap-text">{{detailOfBuilding$.value.eregistryUrl}}</a>
+                        <ng-container *ngIf="detailOfBuilding.eregistryUrl">
+                            <a [href]="detailOfBuilding.eregistryUrl" target="_blanck" class="no-wrap-text">{{detailOfBuilding.eregistryUrl}}</a>
                         </ng-container>
-                        <ng-container *ngIf="!detailOfBuilding$.value.eregistryUrl">-</ng-container>  
+                        <ng-container *ngIf="!detailOfBuilding.eregistryUrl">-</ng-container>  
                     </div>
                 </div>
 
             </div>
-        </ng-container>
+        </div>
     </mat-card-content>
 </mat-card>

@@ -41,19 +41,34 @@ mat-card{
     border-radius: 50%;
     object-fit: cover;
     order: -1;
-    width: 26px;
-    height: 32px;
-    padding-left: 16px;
+    width: initial;
+    height: initial;
+    margin: -8px 0 0 16px;
+}
+.mat-card-avatar > img {
+    margin-top: 8px;
 }
 .mat-card-subtitle{
     margin-bottom: 0 !important;
 }
-::ng-deep .popup-fix>.mat-card-header-text {
-    width: 290px;
-    margin: 0 8px !important;
-}
 
 .mat-card-content{
     max-height: 456px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
+}
+.image-container {    
+    /* background-image: url('/assets/img/црб.jpg'); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: 50px; 
+    width: 50px;
+    border-radius: 50%;
+    /* display: flex;
+    flex-direction: row; */
+}
+.title-text {
+    align-self: flex-end;
+    background-color: #ffffffcf;
+    padding: 2px 16px;
 }
