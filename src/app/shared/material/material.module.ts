@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     declarations: [],
@@ -37,7 +38,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         // MatExpansionModule,
         MatCheckboxModule,
         MatAutocompleteModule,
-        MatFormFieldModule
+        MatFormFieldModule,
+        MatProgressSpinnerModule
     ]
 })
 export class MaterialModule { }

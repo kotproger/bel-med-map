@@ -27,8 +27,7 @@ export class BuildingDetailService {
         } else {
             this.httpService.setParam('id', id)
                 .get({
-                    url: environment.phpUrl + '/get_building_detail.php',
-                    body: id
+                    url: environment.phpUrl + '/get_building_detail.php'
                 })
                 .pipe(
                     take(1),

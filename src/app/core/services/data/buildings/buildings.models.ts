@@ -53,6 +53,7 @@ export interface BuildingDetail {
     usageTypeName?: string;
     lon: number;
     lat: number;
+    photos?: any[];
 }
 
 

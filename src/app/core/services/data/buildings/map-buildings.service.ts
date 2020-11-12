@@ -47,7 +47,7 @@ export class MapBuildingsService {
         // обработка незаполненнных типов использований
         buildings.forEach(element => {
             element.usageTypeId  =  element.usageTypeId || 'none'; // Id прочих
-            element.usageTypeName  =  element.usageTypeName || 'Нет данных'; // Id прочих
+            element.usageTypeName  =  element.usageTypeName || 'Не задан тип использования'; // Id прочих
         });
 
         // распределение зданий по типу использования

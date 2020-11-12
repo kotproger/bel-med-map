@@ -52,3 +52,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     height: 24px !important;
     line-height: 0px !important;
 }
+/* уменьшаем текс заголовока */
+.mat-card-header .mat-card-title {
+    font-size: 18px;
+}
+
+/* убираем прокрутку в разделах попапов */
+ .fit-to-content > .mat-tab-body-wrapper > .mat-tab-body, .fit-to-content > .mat-tab-body-wrapper > .mat-tab-body >.mat-tab-body-content{
+    overflow: hidden !important;
+}
+/* правка размеров заголовка */
+.popup-detail-fix>.mat-card-header-text {
+    width: 275px;
+    margin: 0 8px !important;
+}
+.popup-list-fix>.mat-card-header-text {
+    margin: 0 8px !important;
+}

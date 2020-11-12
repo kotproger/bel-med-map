@@ -55,7 +55,7 @@ mat-card{
     order: -1;
     width: 26px;
     height: 32px;
-    padding-left: 16px;
+    margin: 0 0 0 16px;
 }
 .mat-card-subtitle{
     margin-bottom: 0 !important;
