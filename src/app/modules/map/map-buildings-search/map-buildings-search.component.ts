@@ -24,7 +24,7 @@ export function objectValidator(): ValidatorFn {
                 ? null
                 : {geoObject: {value: control.value}};
     };
-  }
+}
 
 @Component({
     selector: 'app-map-buildings-search',
