@@ -46,4 +46,4 @@ testem.log
 Thumbs.db
 
 #Other
-script.sh.txt
+/script.sh.txt
